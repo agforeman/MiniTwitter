@@ -10,10 +10,56 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Include our Stylesheet for this page from the styles directory of
-                project.                                                    -->
-        <link rel="stylesheet" type="text/css" href="styles/signup.css" />
+             project. -->
+        <link rel="stylesheet" type="text/css" href="styles/main.css" />
+        <!-- Include our JavaScript for this page from this directory of the
+             project. -->
+        <script src="main.js" type="text/javascript"></script>
     </head>
     <body>
-        <div>TODO write content</div>
+        <h1>Sign Up Form</h1>
+        <form id="signupForm" action="registration" method="GET">
+            <div id="errorMessage" class="notVisible"></div>
+            <label>Full Name:</label>
+            <input type="text" name="fullName" id="fullName"
+                   placeholder="First Last" required /><br />
+            
+            <label>Username:</label>
+            <input type="text" name="userName" id="userName"
+                   placeholder="Username" required /><br />
+            
+            <label>Email:</label>
+            <input type="email" name="email" id="email" 
+                   placeholder="Email" required /><br />
+            
+            <label>Password:</label>
+            <input type="password" name="password" id="password"
+                   placeholder="Password" required /><br />
+            
+            <label>Confirm Password:</label>
+            <input type="password" name="confirmPassword" id="confirmPassword"
+                   placeholder="Confirm Password" required /><br />
+            
+            <label>Date of Birth</label>
+            <input type="date" name="dateOfBirth" id="dateOfBirth"
+                   placeholder="01/01/1900" required /><br />
+            
+            <label>Security Question:</label>
+            <select name="securityQuestions" id="securityQuestions" 
+                    form="signupForm" required>
+                <option value="pet" selected>
+                    What was the name of your first pet?
+                </option>
+                <option value="car">
+                    What model was your first car?
+                </option>
+                <option value="school">
+                    What was the name of your first school?
+                </option>
+            </select><br />
+            <input type="text" name="securityAnswer" id="securityAnswer"
+                   placeholder="Answer" required />
+            
+        </form>
     </body>
 </html>
