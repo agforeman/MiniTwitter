@@ -6,9 +6,8 @@
 body { 
     font-family: Arial, Helvetica, sans-serif;
     font-size: 85%;
-    margin-left: 2em;
-    margin-right: 2em;
-    width: 400px;
+    margin: 0 auto;
+    width: 800px;
 }
 h1 {     
     font-size: 140%;
@@ -25,10 +24,12 @@ label {
     margin-bottom: 0.5em;
     font-weight: bold;
 }
-input[type="text"], input[type="email"] {  /* An attribute selector */
-    width: 15em;
+input {  /* An attribute selector */
+    width: 10em;
     margin-left: 0.5em;    
     margin-bottom: 0.5em;
+    font: Tahoma;
+    font-size: 10px;
 }
 span {
     margin-left: 0.5em;    
