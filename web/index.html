@@ -37,21 +37,17 @@
         <span id="dateofbirth_error" class="notVisible">*</span>
             
         <label>Security Question:</label>
-           <select name="securityQuestions" id="securityQuestions" 
-                form="signupForm" required>
-            <option value="pet" selected>
-                What was the name of your first pet?
+        <select name="securityQuestions" id="securityQuestions">
+                <!form="signupForm" required>
+            <option value="pet" selected>What was the name of your first pet?
             </option>
-            <option value="car">
-                What model was your first car?
+            <option value="car">What model was your first car?</option>
+            <option value="school">What was the name of your first school?
             </option>
-            <option value="school">
-                What was the name of your first school?
-            </option>
-            </select><br />
-            <input type="text" name="securityAnswer" id="securityAnswer"
-                   placeholder="Answer" required />
-            
-        </form>
+        </select><br>
+        <input type="text" name="securityAnswer" id="securityAnswer"
+            placeholder="Answer" required><br>
+        <input type="submit" name="submit" value="sign up">    
+    </form>
 </body>
 </html>
