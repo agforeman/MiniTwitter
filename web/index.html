@@ -1,65 +1,57 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
-    <head>
-        <title>Sign-Up Page</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Include our Stylesheet for this page from the styles directory of
-             project. -->
-        <link rel="stylesheet" type="text/css" href="styles/main.css" />
-        <!-- Include our JavaScript for this page from this directory of the
-             project. -->
-        <script src="main.js" type="text/javascript"></script>
-    </head>
-    <body>
-        <h1>Sign Up Form</h1>
-        <form id="signupForm" action="registration" method="GET">
-            <div id="errorMessage" class="notVisible"></div>
-            <label>Full Name:</label>
-            <input type="text" name="fullName" id="fullName"
-                   placeholder="First Last" required /><br />
+<head>
+    <title>Sign-Up Page</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <script src="main.js" type="text/javascript"></script>
+</head>
+<body>
+    <h1>Sign Up Form</h1>
+    <form>
+        <div id="errorMessage" class="notVisible"></div>
+    </form>
+    <form action="registration" method="get" onsubmit="return validateForm();">
+        <label class="pad_top">Fullname:</label>
+        <input type="text" id="fullname" required><br>
+        <span id="fullname_error" class="notVisible">*</span>
+        
+        <label class="pad_top">Username:</label>
+        <input type="text" id="username" required><br>
+        <span id="username_error" class="notVisible">*</span>
+       
+        <label class="pad_top">Email:</label>
+        <input type="email" id="email" required><br>
+        <span id="email_error" class="notVisible">*</span>
+        
+        <label class="pad_top">Password:</label>
+        <input type="password" id="password" required><br>
+        <span id="password_error" class="notVisible">*</span>
+        
+        <label class="pad_top">Confirm Password:</label>
+        <input type="password" id="confirmPassword" required><br>
+        <span id="confirmPassword_error" class="notVisible">*</span>
+        
+        <label class="pad_top">Date of Birth:</label>
+        <input type="date" id="dateofbirth" required><br>
+        <span id="dateofbirth_error" class="notVisible">*</span>
             
-            <label>Username:</label>
-            <input type="text" name="userName" id="userName"
-                   placeholder="Username" required /><br />
-            
-            <label>Email:</label>
-            <input type="email" name="email" id="email" 
-                   placeholder="Email" required /><br />
-            
-            <label>Password:</label>
-            <input type="password" name="password" id="password"
-                   placeholder="Password" required /><br />
-            
-            <label>Confirm Password:</label>
-            <input type="password" name="confirmPassword" id="confirmPassword"
-                   placeholder="Confirm Password" required /><br />
-            
-            <label>Date of Birth</label>
-            <input type="date" name="dateOfBirth" id="dateOfBirth"
-                   placeholder="01/01/1900" required /><br />
-            
-            <label>Security Question:</label>
-            <select name="securityQuestions" id="securityQuestions" 
-                    form="signupForm" required>
-                <option value="pet" selected>
-                    What was the name of your first pet?
-                </option>
-                <option value="car">
-                    What model was your first car?
-                </option>
-                <option value="school">
-                    What was the name of your first school?
-                </option>
+        <label>Security Question:</label>
+           <select name="securityQuestions" id="securityQuestions" 
+                form="signupForm" required>
+            <option value="pet" selected>
+                What was the name of your first pet?
+            </option>
+            <option value="car">
+                What model was your first car?
+            </option>
+            <option value="school">
+                What was the name of your first school?
+            </option>
             </select><br />
             <input type="text" name="securityAnswer" id="securityAnswer"
                    placeholder="Answer" required />
             
         </form>
-    </body>
+</body>
 </html>
