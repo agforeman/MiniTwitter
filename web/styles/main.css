@@ -1,35 +1,31 @@
 /* The styles for the elements */
-#mydiv
-{
-    color:red;
+html, body {
+    height: 100%;
 }
 body { 
     font-family: Arial, Helvetica, sans-serif;
     font-size: 85%;
-    margin: 0 auto;
     width: 800px;
+    margin: 0px auto;
 }
 h1 {     
     font-size: 140%;
     color: teal;
     margin-bottom: .5em;
 }
-h2 {
-    font-size: 300%;
-    color: blue;
-}
 label {
     float: left;
-    width: 7em;
+    width: 10em;
     margin-bottom: 0.5em;
     font-weight: bold;
 }
-input {  /* An attribute selector */
-    width: 10em;
+input[type="text"], input[type="email"],
+input[type="date"], input[type="password"], select {
+    width: 100px;
+    font: 10px Tahoma, Verdana, Sans-serif;
+    background: white;
     margin-left: 0.5em;    
     margin-bottom: 0.5em;
-    font: Tahoma;
-    font-size: 10px;
 }
 span {
     margin-left: 0.5em;    
@@ -43,12 +39,10 @@ br {
 .pad_top {
     padding-top: 0.25em;
 }
-.margin_left {
-    margin-left: 0.5em;
-}
-.errorspan {
-    Display: none;
-}
 .notVisible {
-    Dislay:none;
+    display: none;
+}
+
+.signup_form {
+    width: 100%;
 }
