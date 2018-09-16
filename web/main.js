@@ -26,6 +26,7 @@ function validateForm()
         valid = checkPasswordMatch(error_message);
         valid = checkNameLength(error_message) && valid;
         valid = checkForInjection(error_message) && valid;
+        valid = checkPasswordRequirement(error_message) && valid;
         
 
         
@@ -62,9 +63,9 @@ function checkPasswordMatch(error_message) {
     var error_confirm = document.getElementById("confirm_error");
     if(password.value !== confirmpassword.value)
     {
-        password.style.backgroundColor = "yellow"
+        password.style.backgroundColor = "yellow";
         confirmpassword.style.backgroundColor = "yellow";
-        error_password.style.display = "inline"
+        error_password.style.display = "inline";
         error_confirm.style.display = "inline";                
         error_message.innerHTML += "Error! Passwords do not match!<br />";
         return false;
@@ -80,7 +81,7 @@ function checkNameLength(error_message) {
         {
             fullname.style.backgroundColor = "yellow";
             error_name.style.display = "inline";                
-            error_message.innerHTML += "Full Name is not valid!<br />"
+            error_message.innerHTML += "Full Name is not valid!<br />";
             return false;
 	}
     return true;
@@ -111,7 +112,41 @@ function checkForInjection(error_message) {
         }
     }
     if(!valid) {
-        error_message.innerHTML += "Input has invalid characters!<br />"
+        error_message.innerHTML += "Input has invalid characters!<br />";
     }
     return valid;
+}
+    
+function checkPasswordRequirement(error_message) {
+    
+    var password = document.getElementById("password");
+    var error_password = document.getElementById("password_error");
+    var lowerCaseLetters = /[a-z]/g;
+    var upperCaseLetters = /[A-Z]/g;
+    var numbers = /[0-9]/g;
+    
+    //check for lower case letters
+    if (!(password.value.match(lowerCaseLetters))) {
+        password.style.backgroundColor = "yellow";
+        error_password.style.display = "inline";                
+        error_message.innerHTML += "Password must contain a lower case letter!<br />";
+        return false;
+    }
+    
+    //check for upper case letters
+    if (!(password.value.match(upperCaseLetters))) {
+        password.style.backgroundColor = "yellow";
+        error_password.style.display = "inline";                
+        error_message.innerHTML += "Password must contain an upper case letter!<br />";
+        return false;
+    }
+    
+    //check for a number
+    if (!(password.value.match(numbers))) {
+        password.style.backgroundColor = "yellow";
+        error_password.style.display = "inline";                
+        error_message.innerHTML += "Password must contain a number!<br />";
+        return false;
+    }
+    return true;
 }
