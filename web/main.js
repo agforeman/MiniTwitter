@@ -128,7 +128,7 @@ function checkPasswordRequirement(error_message) {
     }
     return true;
 }
-
+//Displays security answer box.
 function DynamicForm() {
     
     var answer = document.getElementById("security_answer");  
