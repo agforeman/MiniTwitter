@@ -43,6 +43,10 @@ br {
     display: none;
 }
 
+.isVisible {
+    display: inline;
+}
+
 .signup_form {
     width: 100%;
 }

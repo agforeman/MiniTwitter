@@ -150,3 +150,9 @@ function checkPasswordRequirement(error_message) {
     }
     return true;
 }
+
+function DynamicForm() {
+    
+    var answer = document.getElementById("security_answer");  
+    answer.className = "isVisible";
+}

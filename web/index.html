@@ -42,8 +42,9 @@
             
         <label class="pad_top">Security Question:</label>
         <select name="security_questions" id="security_questions" 
-                form="signup_form" required>
-            <option value="pet" selected>
+                form="signup_form" required onchange="DynamicForm()">
+            <option disabled selected value>Select an option</option>
+            <option value="pet">
                 What was the name of your first pet?
             </option>
             <option value="car">
@@ -56,7 +57,7 @@
         <span id="security_question_error" class="notVisible">*</span><br />
     
         <label class="pad_top"></label>
-        <input type="text" id="security_answer" class="input"
+        <input type="text" id="security_answer" class="notVisible"
                placeholder="Answer" required />
         <span id="security_answer_error" class="notVisible">*</span><br />
         
