@@ -1,43 +1,21 @@
 function validateForm()
 {
-	var fullname = document.getElementById("fullname");
-        var username = document.getElementById("username");
-        var email = document.getElementById("email");
-	var password = document.getElementById("password");
-	var confirmpassword = document.getElementById("confirm_password");
-        var dateofbirth = document.getElementById("dateofbirth");
-        var securityquestion = document.getElementById("security_questions");
-        var securityanswer = document.getElementById("security_answer");
-	
-        var error_message = document.getElementById("error_message");
-        var error_name = document.getElementById("fullname_error");
-        var error_username = document.getElementById("username_error");
-        var error_email = document.getElementById("email_error");
-        var error_password = document.getElementById("password_error");
-        var error_confirm = document.getElementById("confirm_error");
-        var error_dateofbirth = document.getElementById("dateofbirth_error");
-        var error_security_question = document.getElementById("security_question_error");
-        var error_security_answer = document.getElementById("security_answer_error");
-        
-        var valid = true;
+    var error_message = document.getElementById("error_message"); 
+    var valid = true;
 
-        cleanup();
+    cleanup();
         
-        valid = checkPasswordMatch(error_message);
-        valid = checkNameLength(error_message) && valid;
-        valid = checkForInjection(error_message) && valid;
-        valid = checkPasswordRequirement(error_message) && valid;
-        
-
-        
-        // If there were any errors display them.
-        if(!valid){
-            error_message.style.display = "inline";
-        }
-        
-	return valid;
+    valid = checkPasswordMatch(error_message);
+    valid = checkNameLength(error_message) && valid;
+    valid = checkForInjection(error_message) && valid;
+    valid = checkPasswordRequirement(error_message) && valid;
+          
+    // If there were any errors display them.
+    if(!valid){
+        error_message.style.display = "inline";
+    }   
+    return valid;
 }
-
 
 // Cleanup all the formatting changes caused by errors from the previous submit
 // attempt. IE changes all forms background to white and hides error messages.
@@ -61,6 +39,7 @@ function checkPasswordMatch(error_message) {
     var confirmpassword = document.getElementById("confirm_password");
     var error_password = document.getElementById("password_error");
     var error_confirm = document.getElementById("confirm_error");
+    
     if(password.value !== confirmpassword.value)
     {
         password.style.backgroundColor = "yellow";
@@ -124,28 +103,27 @@ function checkPasswordRequirement(error_message) {
     var lowerCaseLetters = /[a-z]/g;
     var upperCaseLetters = /[A-Z]/g;
     var numbers = /[0-9]/g;
+    var valid = true;
     
     //check for lower case letters
-    if (!(password.value.match(lowerCaseLetters))) {
-        password.style.backgroundColor = "yellow";
-        error_password.style.display = "inline";                
+    if (!(password.value.match(lowerCaseLetters))) {         
         error_message.innerHTML += "Password must contain a lower case letter!<br />";
-        return false;
+        valid = false;
     }
-    
     //check for upper case letters
-    if (!(password.value.match(upperCaseLetters))) {
-        password.style.backgroundColor = "yellow";
-        error_password.style.display = "inline";                
+    if (!(password.value.match(upperCaseLetters))) {               
         error_message.innerHTML += "Password must contain an upper case letter!<br />";
-        return false;
+        valid = false;
     }
-    
     //check for a number
-    if (!(password.value.match(numbers))) {
-        password.style.backgroundColor = "yellow";
-        error_password.style.display = "inline";                
+    if (!(password.value.match(numbers))) {                
         error_message.innerHTML += "Password must contain a number!<br />";
+        valid = false;
+    }
+    //valid is false
+    if(!valid) {
+        password.style.backgroundColor = "yellow";
+        error_password.className = "isVisible";
         return false;
     }
     return true;
