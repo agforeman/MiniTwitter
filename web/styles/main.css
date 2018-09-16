@@ -1,3 +1,8 @@
+/* The styles for specific ids */
+#error_message {
+    background-color: #ffcccc;
+    margin-bottom: 5px;
+}
 /* The styles for the elements */
 html, body {
     height: 100%;
@@ -19,6 +24,9 @@ label {
     margin-bottom: 0.5em;
     font-weight: bold;
 }
+
+/* We have to leave these inputs separated out because the
+   submit and clear buttons are technically input as well */
 input[type="text"], input[type="email"],
 input[type="date"], input[type="password"], select {
     width: 100px;
@@ -42,11 +50,41 @@ br {
 .notVisible {
     display: none;
 }
-
 .isVisible {
     display: inline;
 }
-
 .signup_form {
     width: 100%;
+}
+.button{
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 4px 25px;
+    margin-top: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 85%;
+    font-weight: bold;
+    -webkit-transition-duration: 0.25s;
+    transition-duration: 0.25s;
+}
+.submit_button {
+    background-color: #99ff00;
+    float:left;
+    width: 20%;
+    margin-right: 6px;
+}
+.submit_button:hover {
+    background-color: green;
+    color: white;
+}
+.reset_button {
+    background-color: #ff6666;
+    float: left;
+    color: white;
+    width: 10%;
+}
+.reset_button:hover {
+    background-color: red;
 }

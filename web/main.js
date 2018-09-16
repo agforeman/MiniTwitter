@@ -12,7 +12,8 @@ function validateForm()
           
     // If there were any errors display them.
     if(!valid){
-        error_message.style.display = "inline";
+        error_message.innerHTML += "<br />";
+        error_message.className = "isVisible";
     }   
     return valid;
 }
@@ -24,12 +25,27 @@ function cleanup() {
     document.getElementById("error_message").innerHTML = "";
     
     // Clear error formatting that might be left over from a bad submit
-    var listofelements = document.getElementsByClassName("notVisible");
-    for(var i = 0; i < listofelements.length; ++i) {
-        listofelements[i].style.display = "none";
+    var listofelements = document.getElementsByClassName("isVisible");
+    
+    // Set all error "*" to notVisible. i is not incremented because as the 
+    // elements' classes are changed the are automatically removed from the 
+    // listofelements.
+    for(var i = 0; i < listofelements.length; ) {
+        // Ignore the security answer when hiding all the error spans
+        if(listofelements[i].classList.contains("noCleanup")) {
+            // If we skip an element we must increment i to move to the next
+            // element. This also prevents us from getting stuck in the loop.
+            ++i;
+            continue;
+        }
+        listofelements[i].className = "notVisible";
     }
-    listofelements = document.getElementsByClassName("input");
+    listofelements = document.getElementsByTagName("input");
     for(var i = 0; i < listofelements.length; ++i) {
+        // ignore the buttons when clearing <input> formatting
+        if(listofelements[i].classList.contains("button")) {
+            continue;
+        }
         listofelements[i].style.backgroundColor = "white";
     }
 }
@@ -44,8 +60,8 @@ function checkPasswordMatch(error_message) {
     {
         password.style.backgroundColor = "yellow";
         confirmpassword.style.backgroundColor = "yellow";
-        error_password.style.display = "inline";
-        error_confirm.style.display = "inline";                
+        error_password.className = "isVisible";
+        error_confirm.className = "isVisible";                
         error_message.innerHTML += "Error! Passwords do not match!<br />";
         return false;
     }
@@ -59,7 +75,7 @@ function checkNameLength(error_message) {
 	if (!(/\s/.test(fullname.value)))
         {
             fullname.style.backgroundColor = "yellow";
-            error_name.style.display = "inline";                
+            error_name.className = "isVisible";                
             error_message.innerHTML += "Full Name is not valid!<br />";
             return false;
 	}
@@ -67,25 +83,39 @@ function checkNameLength(error_message) {
 }
 
 function checkForInjection(error_message) {	
-    var error_name = document.getElementById("fullname_error");
-    var error_username = document.getElementById("username_error");
-    var error_email = document.getElementById("email_error");
-    var error_password = document.getElementById("password_error");
-    var error_confirm = document.getElementById("confirm_error");
-    var error_dateofbirth = document.getElementById("dateofbirth_error");
-    var error_security_question = document.getElementById("security_question_error");
-    var error_security_answer = document.getElementById("security_answer_error");
-    
-    
     //check if any input contains a single quote
     var quote = /'/;
     var valid = true;
     
     // Get a result set of all elements that have the class input
-    var listofelements = document.getElementsByClassName("input");
+    var listofelements = document.getElementsByTagName("input");
     for(var i = 0; i < listofelements.length; ++i) {
         // Test each element for a single quote.
         if (quote.test(listofelements[i].value)) {
+            switch(listofelements[i].id) {
+                case "confirm_password" :
+                    document.getElementById("confirm_error").className = "isVisible";
+                    break;
+                case "dateofbirth" :
+                    document.getElementById("dateofbirth_error").className = "isVisible";
+                    break;
+                case "email" :
+                    document.getElementById("email_error").className = "isVisible";
+                    break;
+                case "fullname" :
+                    document.getElementById("fullname_error").className = "isVisible";
+                    break;
+                case "password" :
+                    document.getElementById("password_error").className = "isVisible";
+                    break;
+                case "username" :
+                    document.getElementById("username_error").className = "isVisible";
+                    break;
+                case "security_answer":
+                    document.getElementById("security_answer_error").className = "isVisible";
+                default:
+                    break;
+            }
             valid = false;
             listofelements[i].style.backgroundColor = "yellow";
         }
@@ -132,5 +162,5 @@ function checkPasswordRequirement(error_message) {
 function DynamicForm() {
     
     var answer = document.getElementById("security_answer");  
-    answer.className = "isVisible";
+    answer.className = "isVisible noCleanup";
 }
