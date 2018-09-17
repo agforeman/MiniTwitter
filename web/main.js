@@ -70,9 +70,10 @@ function checkPasswordMatch(error_message) {
 
 function checkNameLength(error_message) {
     var fullname = document.getElementById("fullname");
+    var name = fullname.value;
     var error_name = document.getElementById("fullname_error");
     //check for spaces in full name
-	if (!(/\s/.test(fullname.value)))
+	if (!(/\s/.test(fullname.value)) || name.charAt(name.length-1)=== " ")
         {
             fullname.style.backgroundColor = "yellow";
             error_name.className = "isVisible";                
