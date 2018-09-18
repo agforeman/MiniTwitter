@@ -19,7 +19,7 @@ function validateForm()
 }
 
 // Cleanup all the formatting changes caused by errors from the previous submit
-// attempt. IE changes all forms background to white and hides error messages.
+// attempt (e.g. changes all forms background to white and hides error messages.)
 function cleanup() {
     // Clear the innerHTML for error_message and hide the error div.
     document.getElementById("error_message").innerHTML = "";
