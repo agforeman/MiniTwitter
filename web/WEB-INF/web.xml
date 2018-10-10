@@ -8,6 +8,16 @@
         <session-timeout>30</session-timeout>
     </session-config>
     
+     <servlet>
+        <servlet-name>membershipServlet</servlet-name>
+        <servlet-class>controller.membershipServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>membershipServlet</servlet-name>
+        <url-pattern>/membership</url-pattern>
+    </servlet-mapping>
+    
     <welcome-file-list>
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>

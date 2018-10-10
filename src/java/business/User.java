@@ -15,11 +15,22 @@ public class User implements Serializable {
     
     //define set/get methods for all attributes.
     private String fullName;
+    private String userName;
     private String email;
+    private String birthDate;
+    private String password;
+    private String questionNo;
+    private String answer;
+    
     public User()
     {
         fullName = "";
+        userName = "";
         email = "";
+        birthDate = "";
+        password = "";
+        questionNo = "";
+        answer = "";
     }
     public User(String fromString)
     {
@@ -35,6 +46,14 @@ public class User implements Serializable {
     {
         this.fullName = fullName;
     }
+    public String getUserName() 
+    {
+        return this.userName;
+    }
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
+    }
     public String getEmail()
     {
         return this.email;
@@ -42,6 +61,38 @@ public class User implements Serializable {
     public void setEmail(String email)
     {
         this.email = email;
+    }
+    public String getBirthDate()
+    {
+        return this.birthDate;
+    }
+    public void setBirthDate(String birthDate)
+    {
+       this.birthDate = birthDate;
+    }
+    public String getPassword()
+    {
+        return this.password;
+    }
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+    public String getQuestionNo()
+    {
+        return this.questionNo;
+    }
+    public void setQuestionNo(String questionNo)
+    {
+        this.questionNo = questionNo;
+    }
+    public String getAnswer()
+    {
+        return this.answer;
+    }
+    public void setAnswer(String answer)
+    {
+        this.answer = answer;
     }
     @Override
     public String toString()
