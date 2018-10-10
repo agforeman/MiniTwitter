@@ -13,7 +13,7 @@
     <div id="error_message" class="notVisible"></div>
     <form action="membership" method="post" onsubmit="return validateForm();"
           id="signup_form">
-        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="action" value="signup">
         <label class="pad_top">Fullname:</label>
         <input type="text" id="fullname" placeholder="Full Name" 
                required />
@@ -65,7 +65,7 @@
         <span id="security_answer_error" class="notVisible">*</span><br />
         
         <!-- Form buttons-->
-        <input type="hidden" name="action" value="signup">
+        
         <input type="submit" value="Sign Up" class="button submit_button" />
         <input type="reset" value="Clear" onclick="cleanup()" class="button reset_button" />
     </form>

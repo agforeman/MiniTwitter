@@ -42,11 +42,41 @@ public class membershipServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        
         String action = request.getParameter("action");
+        String url = "/login.jsp";
+        if(action.equals("signup"))
+        {
+            // get parameters from the request
+            String fullName = request.getParameter("fullname");
+            String userName = request.getParameter("username");
+            String email = request.getParameter("email");
+            String birthDate = request.getParameter("birthdate");
+            String questionNo = request.getParameter("security_questions");
+            String answer = request.getParameter("security_answer");
+            String password = request.getParameter("password");
+
+            // store data in User object
+            User user = new User();
+            user.setFullName(fullName);
+            user.setUserName(userName);
+            user.setEmail(email);        
+            user.setBirthDate(birthDate);        
+            user.setQuestionNo(questionNo);
+            user.setAnswer(answer);
+            user.setPassword(password);
+            // store User object in request
+            request.setAttribute("user", user);
+            //userDB.insert(user);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+
+            // forward request to JSP
+            url = "/home.jsp";
+        }
         
-        
+        getServletContext()
+                .getRequestDispatcher(url)
+                .forward(request, response);
     }
 
     /**

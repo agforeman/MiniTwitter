@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDB {
-    public static boolean insert(User user) throws IOException 
+    public static long insert(User user)
     {
-       return true;
+       return 0;
     }
     public static User search(String emailAddress) 
     {
