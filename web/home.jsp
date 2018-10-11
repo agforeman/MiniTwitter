@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +13,14 @@
         <title>Home Page</title>
     </head>
     <body>
-        <h1>Twitter Home Page</h1>
+        <c:import url="header.jsp" />
+        <!-- NOTE BEFORE TESTING IF USER IS NULL CHECK COOKIE TO AND LOAD USER IF THERE IS A COOKIE -->
+        <c:if test="${user == null}">
+            <c:redirect url = "/login.jsp"/>
+        </c:if>
+        <span>Welcome to your homepage </span> 
+        <c:out value="${user.fullname}" />
+        <br />
+        <c:import url="footer.jsp" />
     </body>
 </html>

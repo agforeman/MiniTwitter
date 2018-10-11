@@ -5,10 +5,12 @@
  */
 package controller;
 
-import business.User;
+import business.user;
 import dataaccess.UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,17 +58,22 @@ public class membershipServlet extends HttpServlet {
             String password = request.getParameter("password");
 
             // store data in User object
-            User user = new User();
-            user.setFullName(fullName);
-            user.setUserName(userName);
-            user.setEmail(email);        
-            user.setBirthDate(birthDate);        
-            user.setQuestionNo(questionNo);
-            user.setAnswer(answer);
-            user.setPassword(password);
+            user user = new user();
+            user.setfullname(fullName);
+            user.setusername(userName);
+            user.setemail(email);        
+            user.setbirthdate(birthDate);        
+            user.setquestionno(questionNo);
+            user.setanswer(answer);
+            user.setpassword(password);
             // store User object in request
             request.setAttribute("user", user);
-            //userDB.insert(user);
+            
+            try {
+                UserDB.insert(user);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(membershipServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
 

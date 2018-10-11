@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +13,8 @@
         <title>Forgot Password</title>
     </head>
     <body>
-        <h1>Fill in Later</h1>
+        <c:import url="header.jsp" />
+            <h1>Fill in Later</h1>
+        <c:import url="footer.jsp" />
     </body>
 </html>
