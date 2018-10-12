@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+import javax.swing.JOptionPane;
 
 
 
@@ -79,6 +80,40 @@ public class membershipServlet extends HttpServlet {
 
             // forward request to JSP
             url = "/home.jsp";
+        }
+        else if(action.equals("login"))
+        {
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String remember = request.getParameter("remember");
+            
+            HttpSession session = request.getSession();
+            User user = UserDB.search(email);
+            session.setAttribute("user", user);
+            
+            if(user == null)
+            {
+                url = "/signup.jsp";
+            }
+            else if(user.getemail().equals(email) && user.getpassword().equals(password))
+            {
+                url = "/home.jsp";
+                
+                if(remember != null)
+                {
+                    Cookie c = new Cookie("emailCookie", email);
+                    c.setMaxAge(60*60*24*365*2);
+                    c.setPath("/");
+                    response.addCookie(c);
+                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null,
+                        "Login failed!",
+                        "Error!",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
         
         getServletContext()

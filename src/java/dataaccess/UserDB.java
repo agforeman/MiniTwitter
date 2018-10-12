@@ -20,7 +20,7 @@ public class UserDB {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
             String username = "root";
-            String password = "Alex1234";
+            String password = "root";
             Connection connection = DriverManager.getConnection(dbURL, username, password);
             Statement statement = connection.createStatement();
             
@@ -52,7 +52,7 @@ public class UserDB {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
             String username = "root";
-            String password = "Alex1234";
+            String password = "root";
             Connection connection = DriverManager.getConnection(dbURL, username, password);
             Statement statement = connection.createStatement();
             
@@ -76,6 +76,7 @@ public class UserDB {
                     user.setusername(results.getString(2));
                     user.setemail(results.getString(3));
                     user.setbirthdate(results.getString(4));
+                    user.setpassword(results.getString(5));
                     
                     results.close();
                     return user;

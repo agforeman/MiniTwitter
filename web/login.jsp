@@ -22,9 +22,6 @@
             <a href="forgotpassword.jsp">Forgot Password?</a><br><br>
            
             <p>New? <a href="signup.jsp">Sign Up Now</a></p>
-            <script type="text/javascript">
-                response.redirect("/membership");
-                </script>
         </form>    
         <c:import url="footer.jsp" />
     </body>
