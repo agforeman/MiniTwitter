@@ -5,7 +5,7 @@
  */
 package controller;
 
-import business.user;
+import business.User;
 import dataaccess.UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -58,7 +58,7 @@ public class membershipServlet extends HttpServlet {
             String password = request.getParameter("password");
 
             // store data in User object
-            user user = new user();
+            User user = new User();
             user.setfullname(fullName);
             user.setusername(userName);
             user.setemail(email);        

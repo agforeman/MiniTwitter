@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package dataaccess;
-import business.user;
+import business.User;
 import java.io.*;
 import java.sql.Statement;
 import java.sql.Connection;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDB {
-    public static boolean insert(user user) throws ClassNotFoundException {
+    public static boolean insert(User user) throws ClassNotFoundException {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
@@ -46,7 +46,7 @@ public class UserDB {
         }
         return true;
     }
-    public static user search(String emailAddress) 
+    public static User search(String emailAddress) 
     {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -71,7 +71,7 @@ public class UserDB {
                 
                 results = statement.executeQuery(preparedSQL);
                 if(results.next()){
-                    user user = new user();
+                    User user = new User();
                     user.setfullname(results.getString(1));
                     user.setusername(results.getString(2));
                     user.setemail(results.getString(3));
