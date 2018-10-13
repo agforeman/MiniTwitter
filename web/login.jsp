@@ -17,12 +17,12 @@
         <form method="post" action="membership">
             <input type="hidden" name="action" value="login" />
             <label class="pad_top">Email:</label>
-            <input type="email" name="email" value="${user.email}" placeholder="Email or Username" ><br>
+            <input type="email" name="email" value="<c:out value='${user.email}'/>" placeholder="Email or Username" ><br>
             <label class="pad_top">Password:</label>
-            <input type="password" name="password" value="${user.password}" placeholder="Enter Password" ><br>
+            <input type="password" name="password" value="<c:out value='${user.password}'/>" placeholder="Enter Password" ><br>
             <input type="submit" name="login" value="Login"> 
             
-            <input type="checkbox" name="remember" value="Remember Me"><span>Remember Me</span>
+            <input type="checkbox" name="remember" value="remember"><span>Remember Me</span>
             <a href="forgotpassword.jsp">Forgot Password?</a><br><br>
            
             <p>New? <a href="signup.jsp">Sign Up Now</a></p>

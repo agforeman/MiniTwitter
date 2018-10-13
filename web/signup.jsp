@@ -9,6 +9,9 @@
 </head>
 <body>
     <c:import url="header.jsp" />
+    <c:if test="${not empty signupError}">
+        <p><c:out value="${signupError}"/></p>
+    </c:if>
     <h1>Sign Up Form</h1>
     <div id="error_message" class="notVisible"></div>
     <form action="membership" method="post" onsubmit="return validateForm();"
@@ -16,17 +19,17 @@
         <input type="hidden" name="action" value="signup">
         <label class="pad_top">Fullname:</label>
         <input type="text" id="fullname" name="fullname" placeholder="Full Name" 
-               required />
+               value="<c:out value='${user.fullname}'/>" required />
         <span id="fullname_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Username:</label>
         <input type="text" id="username" name="username" placeholder="Username" 
-               required />
+               value="<c:out value='${user.username}'/>"required />
         <span id="username_error" class="notVisible">*</span><br />
        
         <label class="pad_top">Email:</label>
         <input type="email" id="email" name="email" placeholder="Email"
-               required />
+               value="<c:out value='${user.email}'/>"required />
         <span id="email_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Password:</label>
@@ -35,12 +38,13 @@
         <span id="password_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Confirm Password:</label>
-        <input type="password" id="confirm_password" 
+        <input type="password" id="confirm_password" name="confirm_password"
                placeholder="Confirm Password" required />
         <span id="confirm_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Date of Birth:</label>
-        <input type="date" id="dateofbirth" name="birthdate" required />
+        <input type="date" id="dateofbirth" name="birthdate" 
+               value="<c:out value='${user.birthdate}'/>" required />
         <span id="dateofbirth_error" class="notVisible">*</span><br />
             
         <label class="pad_top">Question:</label>
