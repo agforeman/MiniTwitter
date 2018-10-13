@@ -1,10 +1,13 @@
-<!DOCTYPE jsp>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Sign-Up Page</title>
     <meta charset="utf-8">
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/signup.css" />
+    <link rel="stylesheet" type="text/css" href="styles/header.css" />
+    <link rel="stylesheet" type="text/css" href="styles/footer.css" />
     <script src="includes/main.js" type="text/javascript"></script>
 </head>
 <body>

@@ -10,17 +10,20 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="styles/header.css" />
+        <link rel="stylesheet" type="text/css" href="styles/footer.css" />
         <title>Home Page</title>
     </head>
     <body>
-        <c:import url="header.jsp" />
-        <!-- NOTE BEFORE TESTING IF USER IS NULL CHECK COOKIE TO AND LOAD USER IF THERE IS A COOKIE -->
+        <div id="header"><c:import url="header.jsp" /></div>
+        <!-- TODO: BEFORE TESTING IF USER IS NULL CHECK COOKIE TO AND LOAD USER IF THERE IS A COOKIE -->
         <c:if test="${user == null}">
             <c:redirect url = "/login.jsp"/>
         </c:if>
         <span>Welcome to your homepage </span> 
         <c:out value="${user.fullname}" />
         <br />
-        <c:import url="footer.jsp" />
+        <div id="footer"><c:import url="footer.jsp" /></div>
     </body>
 </html>

@@ -139,7 +139,7 @@ public class membershipServlet extends HttpServlet {
                 request.setAttribute("loginError", "No user found. If this is"
                         + " your first time, please use the Signup link");
             }
-            else if(user.getemail().equals(email) && user.getpassword().equals(password))
+            else if(user.getemail().equalsIgnoreCase(email) && user.getpassword().equals(password))
             {
                 url = "/home.jsp";
                 request.removeAttribute("loginError");
@@ -155,6 +155,11 @@ public class membershipServlet extends HttpServlet {
             {
                 request.setAttribute("loginError","Login failed! Check password");   
             }
+        } else if(action.equals("logout")) {
+            HttpSession session = request.getSession();
+            session.invalidate();
+            
+            url = "/login.jsp";
         }
         
         getServletContext()

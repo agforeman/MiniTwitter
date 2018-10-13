@@ -10,6 +10,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="styles/header.css" />
+        <link rel="stylesheet" type="text/css" href="styles/footer.css" />
         <title>Forgot Password</title>
     </head>
     <body>

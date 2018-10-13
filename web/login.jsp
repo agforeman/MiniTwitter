@@ -6,10 +6,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="styles/header.css" />
+        <link rel="stylesheet" type="text/css" href="styles/footer.css" />
         <title>Login</title>
     </head>
     <body>
         <c:import url="header.jsp" />
+        <!-- If the user is already signed in go directly to homepage -->
+        <c:if test="${user != null}">
+            <c:redirect url="/home.jsp"/>
+        </c:if>
         <c:if test="${not empty loginError}">
             <p><c:out value="${loginError}"/></p>
         </c:if>
