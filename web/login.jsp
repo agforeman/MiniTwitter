@@ -10,6 +10,9 @@
     </head>
     <body>
         <c:import url="header.jsp" />
+        <c:if test="${not empty loginError}">
+            <p><c:out value="${loginError}"/></p>
+        </c:if>
         <h1>Login</h1>
         <form method="post" action="membership">
             <input type="hidden" name="action" value="login" />
@@ -17,7 +20,8 @@
             <input type="email" name="email" value="${user.email}" placeholder="Email or Username" ><br>
             <label class="pad_top">Password:</label>
             <input type="password" name="password" value="${user.password}" placeholder="Enter Password" ><br>
-            <input type="submit" value="Login"> 
+            <input type="submit" name="login" value="Login"> 
+            
             <input type="checkbox" name="remember" value="Remember Me"><span>Remember Me</span>
             <a href="forgotpassword.jsp">Forgot Password?</a><br><br>
            

@@ -93,26 +93,24 @@ public class membershipServlet extends HttpServlet {
             
             if(user == null)
             {
-                url = "/signup.jsp";
+                request.setAttribute("loginError", "No user found. If this is"
+                        + " your first time, please use the Signup link");
             }
             else if(user.getemail().equals(email) && user.getpassword().equals(password))
             {
                 url = "/home.jsp";
                 
-                if(remember != null)
+                /*if(remember != null)
                 {
                     Cookie c = new Cookie("emailCookie", email);
                     c.setMaxAge(60*60*24*365*2);
                     c.setPath("/");
                     response.addCookie(c);
-                }
+                }*/
             }
             else
             {
-                JOptionPane.showMessageDialog(null,
-                        "Login failed!",
-                        "Error!",
-                        JOptionPane.WARNING_MESSAGE);
+                request.setAttribute("loginError","Login failed! Check password");   
             }
         }
         

@@ -72,11 +72,11 @@ public class UserDB {
                 results = statement.executeQuery(preparedSQL);
                 if(results.next()){
                     User user = new User();
-                    user.setfullname(results.getString(1));
-                    user.setusername(results.getString(2));
-                    user.setemail(results.getString(3));
-                    user.setbirthdate(results.getString(4));
-                    user.setpassword(results.getString(5));
+                    user.setfullname(results.getString(2));
+                    user.setusername(results.getString(3));
+                    user.setemail(results.getString(4));
+                    user.setbirthdate(results.getString(5));
+                    user.setpassword(results.getString(6));
                     
                     results.close();
                     return user;
