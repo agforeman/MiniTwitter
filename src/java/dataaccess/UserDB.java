@@ -58,7 +58,7 @@ public class UserDB {
             
             String preparedSQL = 
                     "SELECT userID, emailAddress FROM user " +
-                    "WHERE emailAddress = " + emailAddress;
+                    "WHERE emailAddress = '"+ emailAddress +"'";
             
             ResultSet results = statement.executeQuery(preparedSQL);
             if (results.next()){
