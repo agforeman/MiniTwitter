@@ -32,12 +32,7 @@ public class User implements Serializable {
         questionNo = "";
         answer = "";
     }
-    public User(String fromString)
-    {
-        String[] data = fromString.replace("[", "").split(",");
-        this.setfullname(data[0]);
-        this.setemail(data[1]);
-    }
+    //setters and getters
     public String getfullname()
     {
         return this.fullname;
@@ -94,13 +89,5 @@ public class User implements Serializable {
     {
         this.answer = answer;
     }
-    @Override
-    public String toString()
-    {
-      StringBuilder sb = new StringBuilder();
-      sb.append(String.format("[%s,%s]", this.getfullname(), this.getemail()));
-      return sb.toString();
-    }
-    
-    
+  
 }

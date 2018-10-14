@@ -12,21 +12,25 @@ and open the template in the editor.
 }
 
 .submit_button {
-    background-color: #99ff00;
-    float:left;
+    background-color: cornflowerblue;
+    color: white;
+    display: inline-block;
+    text-align: center;
     width: 20%;
     margin-right: 6px;
 }
 .submit_button:hover {
-    background-color: green;
+    background-color: lightskyblue;
     color: white;
 }
 .reset_button {
-    background-color: #ff6666;
-    float: left;
+    display: inline-block;
+    text-align: center;
+    background-color: gray;
     color: white;
     width: 10%;
+    
 }
 .reset_button:hover {
-    background-color: red;
+    background-color: lightgray;
 }

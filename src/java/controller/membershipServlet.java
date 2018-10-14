@@ -131,18 +131,20 @@ public class membershipServlet extends HttpServlet {
             String remember = request.getParameter("remember");
             
             HttpSession session = request.getSession();
-            User user = UserDB.search(email);
-            session.setAttribute("user", user);
+            User user = UserDB.search(email);  //search for user by email in database.
             
+            
+            //no user found in database
             if(user == null)
             {
                 request.setAttribute("loginError", "No user found. If this is"
                         + " your first time, please use the Signup link");
             }
+            //if user exists in database, check email and password for user
             else if(user.getemail().equalsIgnoreCase(email) && user.getpassword().equals(password))
             {
-                url = "/home.jsp";
-                request.removeAttribute("loginError");
+                session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
+                request.removeAttribute("loginError"); //removes lingering login errors for a user.
                 /*if(remember != null)
                 {
                     Cookie c = new Cookie("emailCookie", email);
@@ -153,9 +155,12 @@ public class membershipServlet extends HttpServlet {
             }
             else
             {
-                request.setAttribute("loginError","Login failed! Check password");   
+                request.setAttribute("loginError","Login failed! Check password");
+                url = "/login.jsp";
             }
-        } else if(action.equals("logout")) {
+        }
+        //If user signs out of account, invalidate session and send to login page
+        else if(action.equals("logout")) {
             HttpSession session = request.getSession();
             session.invalidate();
             
@@ -318,6 +323,4 @@ public class membershipServlet extends HttpServlet {
         }
         return valid;
     }
-    
-    // TODO Should we implement the rest of the client side checks for user input
 }

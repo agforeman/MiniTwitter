@@ -8,3 +8,15 @@ and open the template in the editor.
     Author     : Alex
 */
 
+
+.login_button {
+    display: inline-block;
+    text-align: center;
+    background-color: cornflowerblue;
+    color: white;
+    width: 13%;
+    font-size: 100%;
+}
+.login_button:hover {
+    background-color: lightskyblue;
+}

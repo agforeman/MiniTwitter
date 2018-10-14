@@ -6,8 +6,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="styles/main.css" />
+         <link rel="stylesheet" type="text/css" href="styles/login.css" />
         <link rel="stylesheet" type="text/css" href="styles/header.css" />
         <link rel="stylesheet" type="text/css" href="styles/footer.css" />
+
         <title>Login</title>
     </head>
     <body>
@@ -19,19 +21,18 @@
         <c:if test="${not empty loginError}">
             <p><c:out value="${loginError}"/></p>
         </c:if>
+        
+        
         <h1>Login</h1>
         <form method="post" action="membership">
             <input type="hidden" name="action" value="login" />
-            <label class="pad_top">Email:</label>
             <input type="email" name="email" value="<c:out value='${user.email}'/>" placeholder="Email or Username" ><br>
-            <label class="pad_top">Password:</label>
             <input type="password" name="password" value="<c:out value='${user.password}'/>" placeholder="Enter Password" ><br>
-            <input type="submit" name="login" value="Login"> 
-            
-            <input type="checkbox" name="remember" value="remember"><span>Remember Me</span>
+            <input type="submit" value="Login" class="button login_button"> 
+            <p style="font-size:12px">
+            <input type="checkbox" name="remember" value="remember"><span>Remember Me</span> 
             <a href="forgotpassword.jsp">Forgot Password?</a><br><br>
-           
-            <p>New? <a href="signup.jsp">Sign Up Now</a></p>
+            New? <a href="signup.jsp">Sign Up Now</a></p>
         </form>    
         <c:import url="footer.jsp" />
     </body>
