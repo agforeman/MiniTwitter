@@ -26,8 +26,10 @@
         <h1>Login</h1>
         <form method="post" action="membership">
             <input type="hidden" name="action" value="login" />
-            <input type="email" name="email" value="<c:out value='${user.email}'/>" placeholder="Email or Username" ><br>
-            <input type="password" name="password" value="<c:out value='${user.password}'/>" placeholder="Enter Password" ><br>
+            <input type="email" name="email" value="<c:out value='${user.email}'/>" 
+                   placeholder="Email" required ><br>
+            <input type="password" name="password" value="<c:out value='${user.password}'/>" 
+                   placeholder="Enter Password" required><br>
             <input type="submit" value="Login" class="button login_button"> 
             <p style="font-size:12px">
             <input type="checkbox" name="remember" value="remember"><span>Remember Me</span> 
