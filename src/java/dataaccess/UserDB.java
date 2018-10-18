@@ -77,6 +77,8 @@ public class UserDB {
                     user.setemail(results.getString(4));
                     user.setbirthdate(results.getString(5));
                     user.setpassword(results.getString(6));
+                    user.setquestionno(results.getString(7));
+                    user.setanswer(results.getString(8));
                     
                     results.close();
                     return user;

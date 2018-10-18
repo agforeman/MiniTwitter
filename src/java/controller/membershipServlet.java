@@ -17,7 +17,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import javax.swing.JOptionPane;
+import java.util.Random;
+
+
 
 
 
@@ -165,6 +167,38 @@ public class membershipServlet extends HttpServlet {
             session.invalidate();
             
             url = "/login.jsp";
+        }
+        else if(action.equals("forgot")) {
+            String email = request.getParameter("email");
+            String questionNo = request.getParameter("security_questions");
+            String answer = request.getParameter("security_answer");
+            
+            //HttpSession session = request.getSession();
+            User user = UserDB.search(email);  //search for user by email in database.
+            
+            //no user found in database
+            if(user == null)
+            {
+                request.setAttribute("forgotMessage", "No user found. If this is"
+                        + " your first time, please use the Signup link");
+                url="/forgotpassword.jsp";
+            }
+            else if(user.getemail().equalsIgnoreCase(email) && user.getquestionno().equals(questionNo)
+                    && user.getanswer().equalsIgnoreCase(answer))
+            {
+                //session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
+               String newPassword = generatePassword(); //generate new password
+                
+                
+                request.setAttribute("forgotMessage", "Email has been sent!"); //removes lingering login errors for a user.
+                url="/forgotpassword.jsp";
+            }
+            else
+            {    
+                request.setAttribute("forgotMessage", "Incorrect information. Please try again");
+                url = "/forgotpassword.jsp";
+            }
+                
         }
         
         getServletContext()
@@ -322,5 +356,26 @@ public class membershipServlet extends HttpServlet {
             valid = false;
         }
         return valid;
+    }
+    
+    /*****************************************************************
+     *                    generatePassword()                     *
+     *****************************************************************
+     * Helper function for forgot password action. Creates a randomly*
+     * generated password with 8 characters and returns it.          *
+     *                                                               *
+     * @return string                                                *
+     *****************************************************************/
+    protected String generatePassword() {
+        String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder temp = new StringBuilder();
+        Random rnd = new Random();
+        while (temp.length() < 8) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * CHARS.length());
+            temp.append(CHARS.charAt(index));
+        }
+        String newPass = temp.toString();
+        return newPass;
+
     }
 }
