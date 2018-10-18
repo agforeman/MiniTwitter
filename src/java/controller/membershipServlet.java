@@ -188,8 +188,10 @@ public class membershipServlet extends HttpServlet {
             {
                 //session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
                String newPassword = generatePassword(); //generate new password
-                
-                
+               user.setpassword(newPassword);
+
+                // update user in the database
+                UserDB.update(user);
                 request.setAttribute("forgotMessage", "Email has been sent!"); //removes lingering login errors for a user.
                 url="/forgotpassword.jsp";
             }

@@ -6,7 +6,7 @@
 package dataaccess;
 import business.User;
 import java.io.*;
-import java.sql.Statement;
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
@@ -96,6 +96,43 @@ public class UserDB {
 
         }
         return null;
+    }
+    
+    public static boolean update(User user) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+            
+        String preparedSQL = 
+            "UPDATE User SET "
+            + "fullname = ?, "
+            + "emailAddress = ?, "
+            + "birthdate = ?, "
+            + "password = ?, "
+            + "questionNo = ?,"
+            + "answer = ?"
+            + "WHERE emailAddress = ?";
+            
+        try {
+            PreparedStatement ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, user.getfullname());
+            ps.setString(2, user.getemail());
+            ps.setString(3, user.getbirthdate());
+            ps.setString(4, user.getpassword());
+            ps.setString(5, user.getquestionno());
+            ps.setString(6, user.getanswer());
+            ps.setString(7, user.getemail());
+            
+            ps.executeUpdate();
+            return true;
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return false;
+        }finally {
+            pool.freeConnection(connection);
+        }
+       
     }
     
 }
