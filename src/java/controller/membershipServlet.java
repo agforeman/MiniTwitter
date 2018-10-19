@@ -6,6 +6,7 @@
 package controller;
 
 import business.User;
+import Util.MailUtilYahoo;
 import com.mysql.cj.util.StringUtils;
 import dataaccess.UserDB;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.util.Random;
+import javax.mail.*;
 
 
 
@@ -168,12 +170,11 @@ public class membershipServlet extends HttpServlet {
             
             url = "/login.jsp";
         }
+        //Forgot password action
         else if(action.equals("forgot")) {
             String email = request.getParameter("email");
             String questionNo = request.getParameter("security_questions");
             String answer = request.getParameter("security_answer");
-            
-            //HttpSession session = request.getSession();
             User user = UserDB.search(email);  //search for user by email in database.
             
             //no user found in database
@@ -181,19 +182,23 @@ public class membershipServlet extends HttpServlet {
             {
                 request.setAttribute("forgotMessage", "No user found. If this is"
                         + " your first time, please use the Signup link");
-                url="/forgotpassword.jsp";
+                url="/login.jsp";
             }
+            //Check user email, security question and answer
             else if(user.getemail().equalsIgnoreCase(email) && user.getquestionno().equals(questionNo)
                     && user.getanswer().equalsIgnoreCase(answer))
             {
-                //session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
                String newPassword = generatePassword(); //generate new password
-               user.setpassword(newPassword);
+               user.setpassword(newPassword); //set new password to User object
 
                 // update user in the database
                 UserDB.update(user);
-                request.setAttribute("forgotMessage", "Email has been sent!"); //removes lingering login errors for a user.
-                url="/forgotpassword.jsp";
+                
+                //send user an email with new password
+                sendEmail(user.getemail(), user.getpassword(), user.getfullname());
+
+                request.setAttribute("forgotMessage", "Email has been sent!"); //let user know email has been sent
+                url="/login.jsp";
             }
             else
             {    
@@ -361,7 +366,7 @@ public class membershipServlet extends HttpServlet {
     }
     
     /*****************************************************************
-     *                    generatePassword()                     *
+     *                    generatePassword()                         *
      *****************************************************************
      * Helper function for forgot password action. Creates a randomly*
      * generated password with 8 characters and returns it.          *
@@ -379,5 +384,47 @@ public class membershipServlet extends HttpServlet {
         String newPass = temp.toString();
         return newPass;
 
+    }
+    
+    /*****************************************************************
+     *                    sendEmail()                                *
+     *****************************************************************
+     * Helper function for the forgot action in DoPost. Sends an     *
+     * email to the user with their new password                     *
+     *                                                               *
+     * @param String email Users email address                       *
+     * @param String password Users new password                     *
+     * @param String name Users full name                            *
+     * @return None                                                  *
+     *****************************************************************/
+    private void sendEmail(String email, String password, String name) {
+    
+        String to = email;
+        String from = "twitproject16@yahoo.com";
+        String subject = "New Password";
+        String body = "Dear " + name + ",\n\n" +
+        "You recently requested a password change. Here is your new password: \n\n" +
+        password +
+        "\n\nHave a great day!\n\n" +
+        "Twitter Team\n" +
+        "Alex Foreman & Paul Brown";
+        boolean isBodyHTML = false;
+
+        try
+        {
+            MailUtilYahoo.sendMail(to, from, subject, body, isBodyHTML);
+        }
+        catch (MessagingException e)
+        {
+            this.log(
+                "Unable to send email. \n" +
+                "Here is the email you tried to send: \n" +
+                "=====================================\n" +
+                "TO: " + email + "\n" +
+                "FROM: " + from + "\n" +
+                "SUBJECT: " + subject + "\n" +
+                "\n" +
+                body + "\n\n");
+            }            
     }
 }

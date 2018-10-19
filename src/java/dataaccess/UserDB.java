@@ -48,19 +48,20 @@ public class UserDB {
     }
     public static User search(String emailAddress) 
     {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet results = null;
+            
+        String preparedSQL = 
+            "SELECT userID, emailAddress FROM user " +
+            "WHERE emailAddress = ?";
+        
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
-            String username = "root";
-            String password = "root";
-            Connection connection = DriverManager.getConnection(dbURL, username, password);
-            Statement statement = connection.createStatement();
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, emailAddress);
+            results = ps.executeQuery();
             
-            String preparedSQL = 
-                    "SELECT userID, emailAddress FROM user " +
-                    "WHERE emailAddress = '"+ emailAddress +"'";
-            
-            ResultSet results = statement.executeQuery(preparedSQL);
             if (results.next()){
                 int userID = results.getInt("userID");
                 results.close();
@@ -69,7 +70,7 @@ public class UserDB {
                     "SELECT * FROM user " +
                     "WHERE userID = " + userID;
                 
-                results = statement.executeQuery(preparedSQL);
+                results = ps.executeQuery(preparedSQL);
                 if(results.next()){
                     User user = new User();
                     user.setfullname(results.getString(2));
@@ -91,9 +92,9 @@ public class UserDB {
         } catch (SQLException e) {
             for (Throwable t : e)
                 t.printStackTrace();
-
-        } catch (Exception e) {
-
+            return null;
+        } finally {
+            pool.freeConnection(connection);
         }
         return null;
     }

@@ -21,6 +21,9 @@
         <c:if test="${not empty loginError}">
             <p><c:out value="${loginError}"/></p>
         </c:if>
+         <c:if test="${not empty forgotMessage}">
+            <p><c:out value="${forgotMessage}"/></p>
+        </c:if>
         
         
         <h1>Login</h1>
