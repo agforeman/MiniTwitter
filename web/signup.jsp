@@ -19,6 +19,14 @@
     <div id="error_message" class="notVisible"></div>
     <form action="membership" method="post" onsubmit="return validateForm();"
           id="signup_form">
+         <c:choose>
+            <c:when test="${user != null}">
+                <input type="hidden" name="action" value="update"> 
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="action" value="signup">
+            </c:otherwise>
+        </c:choose>      
         <input type="hidden" name="action" value="signup">
         <label class="pad_top">Fullname:</label>
         <input type="text" id="fullname" name="fullname" placeholder="Full Name" 
@@ -26,13 +34,29 @@
         <span id="fullname_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Username" 
-               value="<c:out value='${user.username}'/>"required />
+        <c:choose>
+            <c:when test="${user != null}">
+                <input type="text" style="background-color:lightgray;" 
+                    value="<c:out value='${user.username}'/>" readonly />
+            </c:when>
+            <c:otherwise>
+                <input type="text" id="username" name="username" placeholder="Username"
+                   required />
+            </c:otherwise>
+        </c:choose>      
         <span id="username_error" class="notVisible">*</span><br />
        
         <label class="pad_top">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Email"
-               value="<c:out value='${user.email}'/>"required />
+         <c:choose>
+            <c:when test="${user != null}">
+                <input type="text" style="background-color:lightgray;" 
+                    value="<c:out value='${user.email}'/>" readonly />
+            </c:when>
+            <c:otherwise>
+                <input type="text" id="email" name="email" placeholder="email"
+                   required />
+            </c:otherwise>
+        </c:choose>
         <span id="email_error" class="notVisible">*</span><br />
         
         <label class="pad_top">Password:</label>
@@ -72,9 +96,16 @@
         <span id="security_answer_error" class="notVisible">*</span><br />
         
         <!-- Form buttons-->
+        <c:choose>
+            <c:when test="${user != null}">
+                <input type="submit" value="Update" class="button submit_button" />
+            </c:when>
+            <c:otherwise>
+                <input type="submit" value="Sign Up" class="button submit_button" />
+                <input type="reset" value="Clear" onclick="cleanup()" class="button reset_button" />
+            </c:otherwise>
+        </c:choose>      
         
-        <input type="submit" value="Sign Up" class="button submit_button" />
-        <input type="reset" value="Clear" onclick="cleanup()" class="button reset_button" />
     </form>
     <c:import url="footer.jsp" />
 </body>
