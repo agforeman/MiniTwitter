@@ -207,6 +207,47 @@ public class membershipServlet extends HttpServlet {
             }
                 
         }
+        else if (action.equals("update")) {
+            // Flags
+            boolean success = true;
+            boolean inputValid = true;
+            
+            // get parameters from the request
+            String fullName = request.getParameter("fullname");
+            String birthDate = request.getParameter("birthdate");
+            String questionNo = request.getParameter("security_questions");
+            String answer = request.getParameter("security_answer");
+            String password = request.getParameter("password");
+            String confirm = request.getParameter("confirm_password");
+            
+            //get user session and set user object from session
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            
+            //update user fields
+            user.setfullname(fullName);        
+            user.setbirthdate(birthDate);        
+            user.setquestionno(questionNo);
+            user.setanswer(answer);
+            user.setpassword(password);
+            
+            // Check to make sure all the data sent by the user is valid
+            StringBuilder errors = new StringBuilder();
+            errors.append("One or more input fields were invalid when trying to update!");
+            inputValid = validate_user_input(user, confirm, errors);
+            if (!inputValid) {
+                request.setAttribute("signupError", errors);
+                url = "/signup.jsp";
+            }
+            else {
+                // update user in the database
+                // display successful update to user and update session with new info
+                UserDB.update(user);
+                request.setAttribute("signupError", "Update Successful!");
+                session.setAttribute("user", user);
+                url = "/signup.jsp";
+            }
+        }
         
         getServletContext()
                 .getRequestDispatcher(url)
