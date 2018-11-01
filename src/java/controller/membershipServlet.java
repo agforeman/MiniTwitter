@@ -19,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.util.Random;
+import java.security.SecureRandom;
+import java.util.Base64;
 import javax.mail.*;
 
 
@@ -188,7 +190,7 @@ public class membershipServlet extends HttpServlet {
             else if(user.getemail().equalsIgnoreCase(email) && user.getquestionno().equals(questionNo)
                     && user.getanswer().equalsIgnoreCase(answer))
             {
-               String newPassword = generatePassword(); //generate new password
+               String newPassword = generatePassword(4); //generate new password(4 bytes)
                user.setpassword(newPassword); //set new password to User object
 
                 // update user in the database
@@ -412,18 +414,15 @@ public class membershipServlet extends HttpServlet {
      * Helper function for forgot password action. Creates a randomly*
      * generated password with 8 characters and returns it.          *
      *                                                               *
+     * @param bytes number of bytes for new password                 *
      * @return string                                                *
      *****************************************************************/
-    protected String generatePassword() {
-        String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder temp = new StringBuilder();
-        Random rnd = new Random();
-        while (temp.length() < 8) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * CHARS.length());
-            temp.append(CHARS.charAt(index));
-        }
-        String newPass = temp.toString();
-        return newPass;
+    protected String generatePassword(int bytes) {
+        
+        Random r = new SecureRandom();
+        byte[] tempBytes = new byte[bytes];
+        r.nextBytes(tempBytes);
+        return Base64.getEncoder().encodeToString(tempBytes);
 
     }
     
