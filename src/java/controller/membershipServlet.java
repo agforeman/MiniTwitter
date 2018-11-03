@@ -465,6 +465,6 @@ public class membershipServlet extends HttpServlet {
                 "SUBJECT: " + subject + "\n" +
                 "\n" +
                 body + "\n\n");
-            }            
+        }            
     }
 }

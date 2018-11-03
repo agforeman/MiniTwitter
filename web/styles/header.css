@@ -38,6 +38,10 @@ li a {
     text-decoration: none;
 }
 
+#sign-out-list-item {
+    float: right;
+}
+
 .logout_button {
     display: block;
     color: white;
