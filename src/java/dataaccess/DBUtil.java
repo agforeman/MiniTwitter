@@ -18,4 +18,14 @@ public class DBUtil {
             System.out.println(e);
         }
     }
+    
+    public static void closeResultSet(ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException e) {
+                    System.out.println(e);
+        }
+    }
 }

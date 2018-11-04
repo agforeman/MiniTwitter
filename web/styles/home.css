@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 3, 2018, 7:23:05 PM
+    Author     : Alex
+*/
+#composer {
+    width: 350px;
+}
+
+#suggested_users, #user_feed {
+    overflow: auto;
+}
+
+.flex-container {
+    display: flex;
+    flex-flow: wrap;
+}
+
+.main_column {
+    flex: 70%;
+}
+
+.side_column {
+    flex: 15%;
+    align-items: stretch;
+}
+
+.tweet_button {
+    background-color: cornflowerblue;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    margin-right: 6px;
+    margin-top: 0px;
+    width: 350px;
+    border-radius: 0px;
+
+}
+.tweet_button:hover {
+    background-color: lightskyblue;
+    color: white;
+}
+
+@media screen and (max-width: 700px) {
+    .flex-container {   
+        flex-direction: column;
+    }
+}

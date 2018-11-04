@@ -94,14 +94,53 @@ public class UserDB {
                 t.printStackTrace();
             return null;
         } finally {
+            DBUtil.closePreparedStatement(ps);
+            DBUtil.closeResultSet(results);
             pool.freeConnection(connection);
         }
         return null;
     }
     
+    public static ArrayList<User> selectUsers() 
+    {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+            
+        String preparedSQL = "SELECT * FROM user_view";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            rs = ps.executeQuery();
+            ArrayList<User> users = new ArrayList<User>();
+            
+            while(rs.next()) {
+                User user = new User();
+                user.setfullname(rs.getString("fullname"));
+                user.setusername(rs.getString("username"));
+                user.setemail(rs.getString("emailAddress"));
+                
+                users.add(user);
+            }
+            connection.close();
+            return users;
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return null;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            DBUtil.closeResultSet(rs);
+            pool.freeConnection(connection);
+        }
+    }
+    
     public static boolean update(User user) {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
             
         String preparedSQL = 
             "UPDATE User SET "
@@ -114,7 +153,7 @@ public class UserDB {
             + "WHERE emailAddress = ?";
             
         try {
-            PreparedStatement ps = connection.prepareStatement(preparedSQL);
+            ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, user.getfullname());
             ps.setString(2, user.getemail());
             ps.setString(3, user.getbirthdate());
@@ -131,6 +170,7 @@ public class UserDB {
                 t.printStackTrace();
             return false;
         }finally {
+            DBUtil.closePreparedStatement(ps);
             pool.freeConnection(connection);
         }
        

@@ -158,6 +158,7 @@ public class membershipServlet extends HttpServlet {
                     c.setPath("/");
                     response.addCookie(c);
                 }*/
+                url = "/home.jsp";
             }
             else
             {
@@ -268,7 +269,6 @@ public class membershipServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        doPost(request, response);
     }
 
     /**
@@ -281,6 +281,7 @@ public class membershipServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="User methods. Click on the + sign on the left to edit the code.">
     /*****************************************************************
      *                     validate_user_input()                     *
      *****************************************************************
@@ -467,4 +468,4 @@ public class membershipServlet extends HttpServlet {
                 body + "\n\n");
         }            
     }
-}
+} // </editor-fold>

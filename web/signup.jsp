@@ -27,7 +27,6 @@
                 <input type="hidden" name="action" value="signup">
             </c:otherwise>
         </c:choose>      
-        <input type="hidden" name="action" value="signup">
         <label class="pad_top">Fullname:</label>
         <input type="text" id="fullname" name="fullname" placeholder="Full Name" 
                value="<c:out value='${user.fullname}'/>" required />
