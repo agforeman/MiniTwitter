@@ -67,6 +67,12 @@ public class tweetServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            String url = "/login.jsp";
+        }
     }
 
     /**
@@ -85,7 +91,7 @@ public class tweetServlet extends HttpServlet {
         String action = request.getParameter("action");
         User user = (User) session.getAttribute("user");
 
-        String url = "/dashboard?action=get_tweets";
+        String url = "/home.jsp";
         
         if(action.equals("post_tweet")) {
             boolean success = true;
@@ -105,6 +111,11 @@ public class tweetServlet extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            ArrayList<Tweet> tweets;
+            user = (User) session.getAttribute("user");
+            String email = user.getemail();
+            tweets = TweetDB.selectTweetsByUser(email);
+            session.setAttribute("tweets", tweets);
         }
         getServletContext()
             .getRequestDispatcher(url)

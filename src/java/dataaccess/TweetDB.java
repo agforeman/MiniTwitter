@@ -29,7 +29,7 @@ public class TweetDB {
             String password = "root";
             Connection connection = DriverManager.getConnection(dbURL, username, password);
             Statement statement = connection.createStatement();
-            
+            //TODO: Prepared statement
             String preparedSQL = 
                     "INSERT INTO " +
                     "tweets(composerEmail, message, mentions) "
