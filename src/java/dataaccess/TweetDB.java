@@ -35,7 +35,7 @@ public class TweetDB {
                     "tweets(composerEmail, message, mentions) "
                     + "VALUES ( '" + tweet.getcomposerEmail() + "', '"
                                    + tweet.getMessage() + "', '"
-                                   + tweet.getMentions()+ "')";
+                                   + tweet.getMentions() + "')";
             
             statement.executeUpdate(preparedSQL);
         } catch (SQLException  e) {
@@ -69,6 +69,7 @@ public class TweetDB {
                 Tweet tweet = new Tweet();
                 tweet.setMessage(rs.getString("message"));
                 tweet.setcomposerEmail(rs.getString("emailAddress"));
+                tweet.setsDate(rs.getString("date"));
                 
                 tweets.add(tweet);
             }

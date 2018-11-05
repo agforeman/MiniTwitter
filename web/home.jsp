@@ -33,8 +33,7 @@
                 <div id="user_info">
                     <img src="user_pic.jpg" alt="Profile Pic"/>
                     <p><c:out value='${user.fullname}'/></p>
-                    <p><c:out value='${user.username}'/></p>
-                    <p><c:out value='${user.email}'/></p>
+                    <p><c:out value='@${user.username}'/></p>
                     <p>Number of Tweets</p>
                 </div>
                 <div id="trends">TRENDS</div>
@@ -59,6 +58,7 @@
                             <p><c:out value='${user_tweet.composerEmail}'/></p>
                             <p><c:out value='${user_tweet.message}'/></p>
                             <p><c:out value='${user_tweet.mentions}'/></p>
+                            <p><c:out value='${user_tweet.sDate}'/></p>
                             <br />
                         </div>
                     </c:forEach>    
@@ -72,8 +72,8 @@
                     <c:forEach items="${users}" var="suggested_user">
                         <div class="users">
                             <img src="user_pic.jpg" alt="Profile Pic"/>
-                            <p><c:out value='${suggested_user.username}'/></p>
-                            <p><c:out value='${suggested_user.email}'/></p>
+                            <p><c:out value='${suggested_user.fullname}'/></p>
+                            <p><c:out value='@${suggested_user.username}'/></p>
                             <br />
                         </div>
                     </c:forEach>

@@ -5,10 +5,13 @@
  */
 package business;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Alex
  */
-public class UserTweetInfo {
+public class UserTweetInfo implements Serializable {
+    //Define attributes
     
 }

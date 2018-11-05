@@ -14,7 +14,7 @@
     <welcome-file-list>
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
-        <error-page>
+    <error-page>
         <error-code>404</error-code>
         <location>/notfounderror.jsp</location>
     </error-page>

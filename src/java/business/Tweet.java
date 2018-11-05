@@ -17,6 +17,7 @@ public class Tweet implements Serializable {
     private String composerEmail;
     private String message;
     private String mentions;
+    private String sDate;
     private Timestamp date;
     
     public Tweet() {
@@ -44,6 +45,12 @@ public class Tweet implements Serializable {
     }
     public void setMentions(String mentions) {
         this.mentions = mentions;
+    }
+    public void setsDate(String date) {
+        this.sDate = date;
+    }
+    public String getsDate() {
+        return this.sDate;
     }
     public String getDate() {
         Timestamp ts = this.date;
