@@ -71,6 +71,8 @@ public class tweetServlet extends HttpServlet {
         HttpSession session = request.getSession();
         // Test if there is a user signed in.
         User user = (User) session.getAttribute("user");
+        // TO DO GET USER NUMBER OF TWEETS
+        int numberOfTweets = 0;
         
         String url = "/login.jsp";
         
@@ -85,10 +87,15 @@ public class tweetServlet extends HttpServlet {
             ArrayList<UserTweetInfo> tweets;
             String email = user.getemail();
             tweets = TweetDB.selectTweetsByUser(email);
+            numberOfTweets = TweetDB.numberOfUserTweets(user);
+            
             session.setAttribute("tweets", tweets);
+            session.setAttribute("numberOfTweets", numberOfTweets);
             
             url = "/home.jsp";
         }
+        
+        
         
         getServletContext()
             .getRequestDispatcher(url)

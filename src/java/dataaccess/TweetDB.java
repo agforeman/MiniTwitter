@@ -75,6 +75,38 @@ public class TweetDB {
             pool.freeConnection(connection);
         }
     }
+    public static int numberOfUserTweets(User user) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int numberOfTweets = 0;
+        
+        String preparedSQL = "SELECT numberOfTweets "
+                           + "FROM tweet_number_view "
+                           + "WHERE emailAddress = ? ";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, user.getemail());
+          
+            
+            rs = ps.executeQuery();
+            while(rs.next()) {
+                numberOfTweets = rs.getInt("numberOfTweets");
+            }
+            return numberOfTweets;
+        } catch (SQLException  e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return numberOfTweets;
+        } catch (Exception e) {
+            return numberOfTweets;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+    }
     
     public static ArrayList<UserTweetInfo> selectTweetsByUser(String email) 
     {
@@ -83,12 +115,14 @@ public class TweetDB {
         PreparedStatement ps = null;
         ResultSet rs = null;
             
-        String preparedSQL = "SELECT * FROM user_tweet_view "
-                           + "WHERE emailAddress = ?";
+        String preparedSQL = "SELECT * FROM user_feed_view "
+                           + "WHERE emailAddress = ? "
+                           + "OR userMentionedEmail = ?";
         
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, email);
+            ps.setString(2, email);
             
             rs = ps.executeQuery();
             ArrayList<UserTweetInfo> tweets = new ArrayList<UserTweetInfo>();

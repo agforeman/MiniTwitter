@@ -34,7 +34,7 @@
                     <img src="user_pic.jpg" alt="Profile Pic"/>
                     <p><c:out value='${user.fullname}'/></p>
                     <p><c:out value='@${user.username}'/></p>
-                    <p>Number of Tweets</p>
+                    <p><c:out value='${numberOfTweets} Tweets'/></p>
                 </div>
                 <div id="trends">TRENDS</div>
             </div>
@@ -62,6 +62,7 @@
                                 <c:out value='${tweet_info.message}'/>
                             </span>
                             <div>
+                                <c:if test="${user.email.equals(tweet_info.emailAddress)}">
                                 <form action="tweet" method="post">
                                     <input type="hidden" name="action" 
                                            value="delete_tweet"/>
@@ -70,6 +71,7 @@
                                     <input type="submit" value="Delete Tweet"
                                            class="button delete_button">
                                 </form>
+                                </c:if>  
                             </div>
                         </div>
                         <br />
