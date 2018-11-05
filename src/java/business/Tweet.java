@@ -5,8 +5,9 @@
  */
 package business;
 import java.io.Serializable;
+import java.util.Date;
 import java.sql.Timestamp;
-
+import java.text.SimpleDateFormat; 
 /**
  *
  * @javabean for Tweet Entity
@@ -16,11 +17,13 @@ public class Tweet implements Serializable {
     private String composerEmail;
     private String message;
     private String mentions;
+    private Timestamp date;
     
     public Tweet() {
         composerEmail = "";
         message = "";
         mentions = "";
+        date = null;
     }
     
     //setters and getters
@@ -42,4 +45,12 @@ public class Tweet implements Serializable {
     public void setMentions(String mentions) {
         this.mentions = mentions;
     }
+    public String getDate() {
+        Timestamp ts = this.date;
+        Date date = new Date();
+        date.setTime(ts.getTime());
+        String formattedDate = new SimpleDateFormat("yyyyMMdd hh:mm:ss").format(date);
+        
+        return formattedDate;
+    } 
 }
