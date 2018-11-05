@@ -26,7 +26,7 @@
             <c:redirect url = "/dashboard?action=get_users"/>
         </c:if>
         <c:if test="${tweets == null}">
-            <c:redirect url = "/tweet?action=get_tweets"/>
+            <c:redirect url = "/dashboard?action=get_tweets"/>
         </c:if>
         <div class="flex-container">
             <div id="left_bar" class="side_column">
