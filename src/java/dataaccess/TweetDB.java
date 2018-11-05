@@ -6,6 +6,7 @@
 package dataaccess;
 import business.Tweet;
 import business.User;
+import business.UserTweetInfo;
 import java.io.*;
 import java.sql.*;
 import java.sql.Connection;
@@ -48,7 +49,7 @@ public class TweetDB {
         return true;
     }
     
-    public static ArrayList<Tweet> selectTweetsByUser(String email) 
+    public static ArrayList<UserTweetInfo> selectTweetsByUser(String email) 
     {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -63,13 +64,15 @@ public class TweetDB {
             ps.setString(1, email);
             
             rs = ps.executeQuery();
-            ArrayList<Tweet> tweets = new ArrayList<Tweet>();
+            ArrayList<UserTweetInfo> tweets = new ArrayList<UserTweetInfo>();
             
             while(rs.next()) {
-                Tweet tweet = new Tweet();
-                tweet.setMessage(rs.getString("message"));
-                tweet.setcomposerEmail(rs.getString("emailAddress"));
-                tweet.setsDate(rs.getString("date"));
+                UserTweetInfo tweet = new UserTweetInfo();
+                tweet.setemailAddress(rs.getString("emailAddress"));
+                tweet.setusername(rs.getString("username"));
+                tweet.setfullname(rs.getString("fullname"));
+                tweet.setmessage(rs.getString("message"));
+                tweet.setdate(rs.getString("date"));
                 
                 tweets.add(tweet);
             }

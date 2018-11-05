@@ -7,12 +7,31 @@ and open the template in the editor.
     Created on : Nov 3, 2018, 7:23:05 PM
     Author     : Alex
 */
+#tweet_composer {
+    width: 20vw;
+    margin: 0px;
+}
+
 #composer {
-    width: 350px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+#tweet_form {
+    width: auto;
+    margin: 0px;
+    text-align: right;
 }
 
 #suggested_users, #user_feed {
     overflow: auto;
+    height: 80vh;
+}
+
+.tweets, .users {
+    text-align: left;
+    margin: 20px;
+    padding: 10px;
 }
 
 .flex-container {
@@ -29,20 +48,33 @@ and open the template in the editor.
     align-items: stretch;
 }
 
-.tweet_button {
+.tweet_button, .delete_button {
     background-color: cornflowerblue;
     color: white;
     display: inline-block;
     text-align: center;
     margin-right: 6px;
     margin-top: 0px;
-    width: 350px;
+    width: auto;
     border-radius: 0px;
-
 }
+
+.tweet_button {
+    margin: 0px;
+}
+
+.delete_button {
+    background-color: crimson;
+    height: 100%;
+}
+
 .tweet_button:hover {
     background-color: lightskyblue;
     color: white;
+}
+
+.delete_button:hover {
+    background-color: darkred;
 }
 
 @media screen and (max-width: 700px) {

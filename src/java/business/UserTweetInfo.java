@@ -13,5 +13,48 @@ import java.io.Serializable;
  */
 public class UserTweetInfo implements Serializable {
     //Define attributes
+    private String emailAddress;
+    private String username;
+    private String fullname;
+    private String message;
+    private String date;
     
+    public UserTweetInfo() {
+        emailAddress = "";
+        username = "";
+        fullname = "";
+        message = "";
+        date = "";
+    }
+    
+    public String getemailAddress() {
+        return this.emailAddress;
+    }
+    public void setemailAddress(String email) {
+        this.emailAddress = email;
+    }
+    public String getusername() {
+        return this.username;
+    }
+    public void setusername(String username) {
+        this.username = username;
+    }
+    public String getfullname() {
+        return this.fullname;
+    }
+    public void setfullname(String fullname) {
+        this.fullname = fullname;
+    }
+    public String getmessage() {
+        return this.message;
+    }
+    public void setmessage(String message) {
+        this.message = message;
+    }
+    public String getdate() {
+        return this.date;
+    }
+    public void setdate(String date) {
+        this.date = date;
+    }
 }

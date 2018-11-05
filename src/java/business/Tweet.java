@@ -17,14 +17,13 @@ public class Tweet implements Serializable {
     private String composerEmail;
     private String message;
     private String mentions;
-    private String sDate;
-    private Timestamp date;
+    private String date; 
     
     public Tweet() {
         composerEmail = "";
         message = "";
         mentions = "";
-        date = null;
+        date = "";
     }
     
     //setters and getters
@@ -46,18 +45,18 @@ public class Tweet implements Serializable {
     public void setMentions(String mentions) {
         this.mentions = mentions;
     }
-    public void setsDate(String date) {
-        this.sDate = date;
+    public void setdate(String date) {
+        this.date = date;
     }
-    public String getsDate() {
-        return this.sDate;
+    public String getdate() {
+        return this.date;
     }
-    public String getDate() {
-        Timestamp ts = this.date;
-        Date date = new Date();
-        date.setTime(ts.getTime());
-        String formattedDate = new SimpleDateFormat("yyyyMMdd hh:mm:ss").format(date);
-        
-        return formattedDate;
-    } 
+    //public String getDate() {
+    //    Timestamp ts = this.date;
+    //    Date date = new Date();
+    //    date.setTime(ts.getTime());
+    //    String formattedDate = new SimpleDateFormat("yyyyMMdd hh:mm:ss").format(date);
+    //    
+    //    return formattedDate;
+    //} 
 }

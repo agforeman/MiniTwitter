@@ -7,6 +7,7 @@ package controller;
 
 import business.Tweet;
 import business.User;
+import business.UserTweetInfo;
 import dataaccess.TweetDB;
 import dataaccess.UserDB;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpSession;
  *
  * @author Alex
  */
-@WebServlet(name = "tweetServlet", urlPatterns = {"/tweet"})
 public class tweetServlet extends HttpServlet {
 
     /**
@@ -67,12 +67,27 @@ public class tweetServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        String url = "/login.jsp";
+        // Test if there is a user signed in.
         User user = (User) session.getAttribute("user");
+        
+        String url = "/login.jsp";
+        
+        // If no user go to login
         if (user == null){
             url = "/login.jsp";
+            action = "no_user";
+        } else if (action == null) {
+            // If user but no action go home
+            url = "/home.jsp";
+        } else if(action.equals("get_tweets")) {            
+            ArrayList<UserTweetInfo> tweets;
+            String email = user.getemail();
+            tweets = TweetDB.selectTweetsByUser(email);
+            session.setAttribute("tweets", tweets);
+            
+            url = "/home.jsp";
         }
         
         getServletContext()
@@ -116,7 +131,7 @@ public class tweetServlet extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ArrayList<Tweet> tweets;
+            ArrayList<UserTweetInfo> tweets;
             user = (User) session.getAttribute("user");
             String email = user.getemail();
             tweets = TweetDB.selectTweetsByUser(email);

@@ -268,7 +268,31 @@ public class membershipServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+        // Test if there is a user signed in.
+        User user = (User) session.getAttribute("user");
         
+        String url = "/login.jsp";
+        
+        // If no user go to login
+        if (user == null){
+            url = "/login.jsp";
+            action = "no_user";
+        } else if (action == null) {
+            // If user but no action go home
+            url = "/home.jsp";
+        } else if(action.equals("get_users")) {            
+            ArrayList<User> users;
+            users = UserDB.selectUsers();
+            session.setAttribute("users", users);
+            
+            url = "/home.jsp";
+        }
+        
+        getServletContext()
+            .getRequestDispatcher(url)
+            .forward(request, response);
     }
 
     /**
