@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class UserTweetInfo implements Serializable {
     //Define attributes
+    private int tweetid;
     private String emailAddress;
     private String username;
     private String fullname;
@@ -20,6 +21,7 @@ public class UserTweetInfo implements Serializable {
     private String date;
     
     public UserTweetInfo() {
+        tweetid = 0;
         emailAddress = "";
         username = "";
         fullname = "";
@@ -27,6 +29,12 @@ public class UserTweetInfo implements Serializable {
         date = "";
     }
     
+    public int gettweetid() {
+        return this.tweetid;
+    }
+    public void settweetid(int tweetid) {
+        this.tweetid = tweetid;
+    }
     public String getemailAddress() {
         return this.emailAddress;
     }

@@ -65,6 +65,8 @@
                                 <form action="tweet" method="post">
                                     <input type="hidden" name="action" 
                                            value="delete_tweet"/>
+                                    <input type="hidden" name="tweetID"
+                                           value="${tweet_info.tweetid}"/>
                                     <input type="submit" value="Delete Tweet"
                                            class="button delete_button">
                                 </form>

@@ -54,8 +54,8 @@ public class tweetServlet extends HttpServlet {
             out.println("</html>");
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    
+    
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -114,7 +114,6 @@ public class tweetServlet extends HttpServlet {
         String url = "/home.jsp";
         
         if(action.equals("post_tweet")) {
-            boolean success = true;
             String composerEmail = user.getemail();
             String message = request.getParameter("user_tweet");
             String mentions = null; // TO DO PARSE MENTIONS FROM MESSAGE
@@ -126,6 +125,24 @@ public class tweetServlet extends HttpServlet {
             
             try {
                 TweetDB.insert(tweet);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ArrayList<UserTweetInfo> tweets;
+            user = (User) session.getAttribute("user");
+            String email = user.getemail();
+            tweets = TweetDB.selectTweetsByUser(email);
+            session.setAttribute("tweets", tweets);
+        }
+        if(action.equals("delete_tweet")){
+            // Get the id of this tweet from the request
+            String tweetID = request.getParameter("tweetID");
+            String mentions = null; // TO DO PARSE MENTIONS FROM MESSAGE
+                        
+            try {
+                TweetDB.delete(tweetID);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
@@ -150,6 +167,6 @@ public class tweetServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

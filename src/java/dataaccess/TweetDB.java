@@ -23,30 +23,57 @@ import java.util.List;
  */
 public class TweetDB {
     public static boolean insert(Tweet tweet) throws ClassNotFoundException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        
+        String preparedSQL = "INSERT INTO "
+                           + "tweets(composerEmail, message, mentions) "
+                           + "VALUES (?,?,?)";
+        
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
-            String username = "root";
-            String password = "root";
-            Connection connection = DriverManager.getConnection(dbURL, username, password);
-            Statement statement = connection.createStatement();
-            //TODO: Prepared statement
-            String preparedSQL = 
-                    "INSERT INTO " +
-                    "tweets(composerEmail, message, mentions) "
-                    + "VALUES ( '" + tweet.getcomposerEmail() + "', '"
-                                   + tweet.getMessage() + "', '"
-                                   + tweet.getMentions() + "')";
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, tweet.getcomposerEmail());
+            ps.setString(2, tweet.getMessage());
+            ps.setString(3, tweet.getMentions());            
             
-            statement.executeUpdate(preparedSQL);
+            ps.executeUpdate();
+            return true;
         } catch (SQLException  e) {
             for (Throwable t : e)
                 t.printStackTrace();
             return false;
         } catch (Exception e) {
             return false;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
         }
-        return true;
+    }
+    public static boolean delete(String tweetID) throws ClassNotFoundException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        
+        String preparedSQL = "DELETE FROM tweets "
+                           + "WHERE id = ?";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setInt(1, Integer.parseInt(tweetID));
+            
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
     }
     
     public static ArrayList<UserTweetInfo> selectTweetsByUser(String email) 
@@ -68,6 +95,7 @@ public class TweetDB {
             
             while(rs.next()) {
                 UserTweetInfo tweet = new UserTweetInfo();
+                tweet.settweetid(rs.getInt("tweetID"));
                 tweet.setemailAddress(rs.getString("emailAddress"));
                 tweet.setusername(rs.getString("username"));
                 tweet.setfullname(rs.getString("fullname"));

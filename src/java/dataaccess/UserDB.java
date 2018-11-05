@@ -16,35 +16,36 @@ import java.util.List;
 
 public class UserDB {
     public static boolean insert(User user) throws ClassNotFoundException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+            
+            String preparedSQL = "INSERT INTO "
+                               + "user(fullname, username, emailAddress, "
+                               + "birthdate, password, questionNo, answer) "
+                               + "VALUES (?,?,?,?,?,?,?)";
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String dbURL = "jdbc:mysql://localhost:3306/twitterdb";
-            String username = "root";
-            String password = "root";
-            Connection connection = DriverManager.getConnection(dbURL, username, password);
-            Statement statement = connection.createStatement();
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, user.getfullname());
+            ps.setString(2, user.getusername());
+            ps.setString(3, user.getemail());
+            ps.setString(4, user.getbirthdate());
+            ps.setString(5, user.getpassword());
+            ps.setInt(6, Integer.parseInt(user.getquestionno()));
+            ps.setString(7, user.getanswer());
             
-            String preparedSQL = 
-                    "INSERT INTO " +
-                    "user(fullname, username, emailAddress, " +
-                    "birthdate, password, questionNo, answer) "
-                    + "VALUES ( '" + user.getfullname() + "', '"
-                                   + user.getusername() + "', '"
-                                   + user.getemail()+ "', '"
-                                   + user.getbirthdate()+ "', '"
-                                   + user.getpassword()+ "', '"
-                                   + user.getquestionno()+ "', '"
-                                   + user.getanswer()+ "')";
-            
-            statement.executeUpdate(preparedSQL);
+            ps.executeUpdate();
+            return true;
         } catch (SQLException e) {
-            for (Throwable t : e)
+             for (Throwable t : e)
                 t.printStackTrace();
             return false;
         } catch (Exception e) {
             return false;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
         }
-        return true;
     }
     public static User search(String emailAddress) 
     {
