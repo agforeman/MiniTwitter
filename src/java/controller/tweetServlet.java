@@ -94,9 +94,7 @@ public class tweetServlet extends HttpServlet {
             
             url = "/home.jsp";
         }
-        
-        
-        
+                
         getServletContext()
             .getRequestDispatcher(url)
             .forward(request, response);
@@ -161,6 +159,9 @@ public class tweetServlet extends HttpServlet {
             tweets = TweetDB.selectTweetsByUser(email);
             session.setAttribute("tweets", tweets);
         }
+        
+        int numberOfTweets = TweetDB.numberOfUserTweets(user);
+        session.setAttribute("numberOfTweets", numberOfTweets);
         getServletContext()
             .getRequestDispatcher(url)
             .forward(request, response);
