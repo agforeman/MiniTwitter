@@ -69,10 +69,15 @@ public class tweetServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
+        String url = "/login.jsp";
         User user = (User) session.getAttribute("user");
         if (user == null){
-            String url = "/login.jsp";
+            url = "/login.jsp";
         }
+        
+        getServletContext()
+            .getRequestDispatcher(url)
+            .forward(request, response);
     }
 
     /**
