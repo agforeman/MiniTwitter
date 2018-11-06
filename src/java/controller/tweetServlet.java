@@ -121,12 +121,16 @@ public class tweetServlet extends HttpServlet {
         if(action.equals("post_tweet")) {
             String composerEmail = user.getemail();
             String message = request.getParameter("user_tweet");
-            String mentions = null; // TO DO PARSE MENTIONS FROM MESSAGE
+            ArrayList<String> mentions = null; //ArrayList used if more than one user is mentioned. 
             
+            //find usernames that are mentioned.
+            mentions = findMentions(message);
+            
+            //build tweet object
             Tweet tweet = new Tweet();
             tweet.setcomposerEmail(composerEmail);
             tweet.setMessage(message);
-            tweet.setMentions(mentions);
+            //tweet.setMentions(mentions);
             
             try {
                 TweetDB.insert(tweet);
@@ -175,6 +179,45 @@ public class tweetServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="User methods. Click on the + sign on the left to edit the code.">
+    /*****************************************************************
+     *                     findMentions()                            *
+     *****************************************************************
+     * Helper function for the post tweet action. A tweet is checked *
+     * for user mentions. If a user mention is found, the username is* 
+     * checked against the user database. If the username is valid,  * 
+     * the user mention is added to the userNames array list. Returns*
+     * an ArrayList of valid usernames that are mentioned in a tweet.*                                     *
+     *                                                               *
+     * @param String text a tweet                                    *
+     * @return ArrayList usernames mentioned                         *
+     *****************************************************************/
+    private ArrayList<String> findMentions(String text){
+       int i = 0;
+       ArrayList<String> userNames = new ArrayList<String>();
+       ArrayList<User> users = new ArrayList<User>();
+       String temp = null;
+       
+       users = UserDB.selectUsers(); //all users in the database
+       while(true)
+       {
+           int found = text.indexOf("@", i);
+           if (found == -1) break;
+           int start = found + 1;
+           //TODO: Fix if a mention doesn't follow with a space.
+           int end = text.indexOf(" ", start);
+           temp = text.substring(start, end);
+           for (int count=0; count < users.size(); count++) {
+               if (users.get(count).getusername().equals(temp)){
+                   userNames.add(temp); 
+               }
+           }
+           i= end +1;
+       }
+        
+        return userNames;
     }
 
 }
