@@ -8,8 +8,10 @@ package controller;
 import business.Tweet;
 import business.User;
 import business.UserTweetInfo;
+import business.UserMention;
 import dataaccess.TweetDB;
 import dataaccess.UserDB;
+import dataaccess.UserMentionDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -122,15 +124,13 @@ public class tweetServlet extends HttpServlet {
             String composerEmail = user.getemail();
             String message = request.getParameter("user_tweet");
             ArrayList<String> mentions = null; //ArrayList used if more than one user is mentioned. 
-            
-            //find usernames that are mentioned.
-            mentions = findMentions(message);
-            
+            UserMention userMention = new UserMention();
+            message += " "; //add a space to end of message to prep for findMentions()
+
             //build tweet object
             Tweet tweet = new Tweet();
             tweet.setcomposerEmail(composerEmail);
             tweet.setMessage(message);
-            //tweet.setMentions(mentions);
             
             try {
                 TweetDB.insert(tweet);
@@ -143,6 +143,28 @@ public class tweetServlet extends HttpServlet {
             user = (User) session.getAttribute("user");
             String email = user.getemail();
             tweets = TweetDB.selectTweetsByUser(email);
+            
+             //find usernames that are mentioned. Returned values are the email addresses of usernames.
+            mentions = findMentions(message);
+            
+            //If mentions, insert userMention with user tweetID
+            if(mentions != null){
+                int tweetid = tweets.get(0).gettweetid();
+                userMention.setemailAddress(email);
+                userMention.settweetid(tweetid);
+                for(int i = 0; i < mentions.size(); i++)
+                {
+                    userMention.setuserMentionedEmail(mentions.get(i));
+                    
+                    try {
+                        UserMentionDB.insert(userMention);
+                    }catch (ClassNotFoundException ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }catch (Exception ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }
+                }
+            }
             session.setAttribute("tweets", tweets);
         }
         if(action.equals("delete_tweet")){
@@ -211,7 +233,7 @@ public class tweetServlet extends HttpServlet {
            temp = text.substring(start, end);
            for (int count=0; count < users.size(); count++) {
                if (users.get(count).getusername().equals(temp)){
-                   userNames.add(temp); 
+                   userNames.add(users.get(count).getemail()); //add email address instead of username
                }
            }
            i= end +1;

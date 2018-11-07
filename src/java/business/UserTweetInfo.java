@@ -5,6 +5,7 @@
  */
 package business;
 
+
 import java.io.Serializable;
 
 /**
@@ -57,7 +58,26 @@ public class UserTweetInfo implements Serializable {
         return this.message;
     }
     public void setmessage(String message) {
-        this.message = message;
+        String newMessage= null;
+        int startInd = 0;
+        while(message.indexOf("@", startInd)!= -1)
+        {
+            int indexOf = message.indexOf("@", startInd);
+            int indexOfSpace = message.indexOf(" ", indexOf+1);
+            if(indexOfSpace == -1) {
+                indexOfSpace = message.length();
+            }
+            String mention = message.substring(indexOf, indexOfSpace);
+            newMessage = message.replace(mention, "<html><font color='blue'>" + mention +
+                              "</font></html>");
+            startInd = indexOf+1;  
+        }
+        if(newMessage != null) {
+            this.message = newMessage;
+            newMessage = null;
+        }
+        else
+            this.message = message;
     }
     public String getdate() {
         return this.date;
