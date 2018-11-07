@@ -59,7 +59,7 @@
                             <span><c:out value='${tweet_info.date}'/></span>
                             <br />
                             <span>
-                                <c:out value='${tweet_info.message}'/>
+                                <c:out value='${tweet_info.message}' escapeXml="false"/>
                             </span>
                             <div>
                                 <c:if test="${user.email.equals(tweet_info.emailAddress)}">
