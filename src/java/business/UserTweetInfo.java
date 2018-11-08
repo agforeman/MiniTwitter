@@ -19,6 +19,7 @@ public class UserTweetInfo implements Serializable {
     private String username;
     private String fullname;
     private String message;
+    private String mentions;
     private String date;
     
     public UserTweetInfo() {
@@ -27,6 +28,7 @@ public class UserTweetInfo implements Serializable {
         username = "";
         fullname = "";
         message = "";
+        mentions = "";
         date = "";
     }
     
@@ -70,14 +72,18 @@ public class UserTweetInfo implements Serializable {
             String mention = message.substring(indexOf, indexOfSpace);
             newMessage = message.replace(mention, "<html><font color='blue'>" + mention +
                               "</font></html>");
-            startInd = indexOf+1;  
+            message = newMessage;
+            //39 equals the amount of added HTML chars. We want the new starting index
+            //to be after the inserted modified code. This handles more than one mention.
+            startInd = indexOf+39+mention.length();
         }
-        if(newMessage != null) {
-            this.message = newMessage;
-            newMessage = null;
-        }
-        else
-            this.message = message;
+        this.message = message;
+    }
+    public String getmentions() {
+        return this.mentions;
+    }
+    public void setmentions(String mentions) {
+        this.mentions = mentions;
     }
     public String getdate() {
         return this.date;

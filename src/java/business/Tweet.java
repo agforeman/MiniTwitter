@@ -16,13 +16,13 @@ public class Tweet implements Serializable {
     // define attributes
     private String composerEmail;
     private String message;
-    private String mentions;
+    private boolean mentions;
     private String date; 
     
     public Tweet() {
         composerEmail = "";
         message = "";
-        mentions = "";
+        mentions = false;
         date = "";
     }
     
@@ -39,10 +39,10 @@ public class Tweet implements Serializable {
     public void setMessage(String message) {
         this.message = message;
     }
-    public String getMentions() {
+    public boolean getMentions() {
         return this.mentions;
     }
-    public void setMentions(String mentions) {
+    public void setMentions(boolean mentions) {
         this.mentions = mentions;
     }
     public void setdate(String date) {

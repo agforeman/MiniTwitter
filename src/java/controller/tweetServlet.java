@@ -125,12 +125,17 @@ public class tweetServlet extends HttpServlet {
             String message = request.getParameter("user_tweet");
             ArrayList<String> mentions = null; //ArrayList used if more than one user is mentioned. 
             UserMention userMention = new UserMention();
-            message += " "; //add a space to end of message to prep for findMentions()
-
+            
+            //find usernames that are mentioned. Returned values are the email addresses of usernames.
+            mentions = findMentions(message);
             //build tweet object
             Tweet tweet = new Tweet();
             tweet.setcomposerEmail(composerEmail);
             tweet.setMessage(message);
+            
+            //set boolean value mentions
+            if(!mentions.isEmpty())
+                tweet.setMentions(true);
             
             try {
                 TweetDB.insert(tweet);
@@ -144,11 +149,8 @@ public class tweetServlet extends HttpServlet {
             String email = user.getemail();
             tweets = TweetDB.selectTweetsByUser(email);
             
-             //find usernames that are mentioned. Returned values are the email addresses of usernames.
-            mentions = findMentions(message);
-            
             //If mentions, insert userMention with user tweetID
-            if(mentions != null){
+            if(!mentions.isEmpty()){
                 int tweetid = tweets.get(0).gettweetid();
                 userMention.setemailAddress(email);
                 userMention.settweetid(tweetid);
@@ -170,8 +172,32 @@ public class tweetServlet extends HttpServlet {
         if(action.equals("delete_tweet")){
             // Get the id of this tweet from the request
             String tweetID = request.getParameter("tweetID");
-            String mentions = null; // TO DO PARSE MENTIONS FROM MESSAGE
-                        
+            ArrayList<UserTweetInfo> tweets;
+            user = (User) session.getAttribute("user");
+            String email = user.getemail();
+            boolean mentions = false;
+            tweets = TweetDB.selectTweetsByUser(email);
+            
+            //check for user mentions
+            for(int i = 0; i < tweets.size(); i++) {
+                if(tweets.get(i).gettweetid() == Integer.parseInt(tweetID)) {
+                    if(tweets.get(i).getmentions() != null) {
+                        mentions = true;
+                    }
+                }
+            }
+            
+            //if there are user mentions, delete mentions
+            if(mentions){
+                try {
+                        UserMentionDB.delete(tweetID);
+                    }catch (ClassNotFoundException ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }catch (Exception ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }
+            }
+
             try {
                 TweetDB.delete(tweetID);
             } catch (ClassNotFoundException ex) {
@@ -179,9 +205,8 @@ public class tweetServlet extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ArrayList<UserTweetInfo> tweets;
-            user = (User) session.getAttribute("user");
-            String email = user.getemail();
+            
+            tweets.clear(); //clear tweets array to update
             tweets = TweetDB.selectTweetsByUser(email);
             session.setAttribute("tweets", tweets);
         }
@@ -221,6 +246,7 @@ public class tweetServlet extends HttpServlet {
        ArrayList<String> userNames = new ArrayList<String>();
        ArrayList<User> users = new ArrayList<User>();
        String temp = null;
+       text += " "; //adds a space to the end of text for function below.
        
        users = UserDB.selectUsers(); //all users in the database
        while(true)

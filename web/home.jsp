@@ -34,7 +34,7 @@
                     <img src="user_pic.jpg" alt="Profile Pic"/>
                     <p><c:out value='${user.fullname}'/></p>
                     <p><c:out value='@${user.username}'/></p>
-                    <p><c:out value='${numberOfTweets} Tweets'/></p>
+                    <p><b><c:out value='${numberOfTweets}'/></b> Tweets</p>
                 </div>
                 <div id="trends">TRENDS</div>
             </div>
@@ -57,10 +57,11 @@
                             <br />
                             <span><c:out value='@${tweet_info.username}:'/></span>
                             <span><c:out value='${tweet_info.date}'/></span>
-                            <br />
+                            <br /><br />
                             <span>
                                 <c:out value='${tweet_info.message}' escapeXml="false"/>
                             </span>
+                            <br /><br />
                             <div>
                                 <c:if test="${user.email.equals(tweet_info.emailAddress)}">
                                 <form action="tweet" method="post">
@@ -74,7 +75,6 @@
                                 </c:if>  
                             </div>
                         </div>
-                        <br />
                     </c:forEach>    
                 </div>
             </div>
@@ -82,13 +82,15 @@
                 <div id="suggested_users">
                     <h2>Who to follow?</h2>
                     <c:forEach items="${users}" var="suggested_user">
-                        <div class="users">
-                            <img src="user_pic.jpg" alt="Profile Pic"/>
-                            <span><c:out value='${suggested_user.fullname}'/></span>
-                            <br/>
-                            <span><c:out value='@${suggested_user.username}'/></span>
-                            <br />
-                        </div>
+                        <c:if test='${user.username != suggested_user.username}'>
+                            <div class="users">
+                                <img src="user_pic.jpg" alt="Profile Pic"/>
+                                <span><c:out value='${suggested_user.fullname}'/></span>
+                                <br/>
+                                <span><c:out value='@${suggested_user.username}'/></span>
+                                <br />
+                            </div>
+                        </c:if>
                     </c:forEach>
                 </div>
             </div>

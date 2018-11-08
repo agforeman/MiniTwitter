@@ -35,7 +35,7 @@ public class TweetDB {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, tweet.getcomposerEmail());
             ps.setString(2, tweet.getMessage());
-            ps.setString(3, tweet.getMentions());            
+            ps.setBoolean(3, tweet.getMentions());            
             
             ps.executeUpdate();
             return true;
@@ -134,6 +134,7 @@ public class TweetDB {
                 tweet.setusername(rs.getString("username"));
                 tweet.setfullname(rs.getString("fullname"));
                 tweet.setmessage(rs.getString("message"));
+                tweet.setmentions(rs.getString("userMentionedEmail"));
                 tweet.setdate(rs.getString("date"));
                 
                 tweets.add(tweet);

@@ -52,5 +52,31 @@ public class UserMentionDB {
         }
     }
     
+    public static boolean delete(String tweetID) throws ClassNotFoundException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        
+        String preparedSQL = "DELETE FROM usermentions "
+                           + "WHERE tweetID = ?";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setInt(1, Integer.parseInt(tweetID));
+            
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+    }
+    
 }
 
