@@ -84,6 +84,10 @@ and open the template in the editor.
 .delete_button:hover {
     background-color: darkred;
 }
+/*change color of user mention text*/
+.blueX {
+    color: blue;
+}
 
 @media screen and (max-width: 700px) {
     .flex-container {   

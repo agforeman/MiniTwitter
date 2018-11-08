@@ -70,12 +70,12 @@ public class UserTweetInfo implements Serializable {
                 indexOfSpace = message.length();
             }
             String mention = message.substring(indexOf, indexOfSpace);
-            newMessage = message.replace(mention, "<html><font color='blue'>" + mention +
-                              "</font></html>");
+            newMessage = message.replace(mention, "<a class='blueX'>" + mention +
+                              "</a>");
             message = newMessage;
-            //39 equals the amount of added HTML chars. We want the new starting index
+            //21 equals the amount of added HTML chars. We want the new starting index
             //to be after the inserted modified code. This handles more than one mention.
-            startInd = indexOf+39+mention.length();
+            startInd = indexOf+21+mention.length();
         }
         this.message = message;
     }

@@ -254,7 +254,6 @@ public class tweetServlet extends HttpServlet {
            int found = text.indexOf("@", i);
            if (found == -1) break;
            int start = found + 1;
-           //TODO: Fix if a mention doesn't follow with a space.
            int end = text.indexOf(" ", start);
            temp = text.substring(start, end);
            for (int count=0; count < users.size(); count++) {
