@@ -5,6 +5,7 @@
  */
 package dataaccess;
 import business.User;
+import controller.tweetServlet;
 import java.io.*;
 import java.sql.*;
 import java.sql.Connection;
@@ -13,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserDB {
     public static boolean insert(User user) throws ClassNotFoundException {
@@ -22,8 +25,9 @@ public class UserDB {
             
             String preparedSQL = "INSERT INTO "
                                + "user(fullname, username, emailAddress, "
-                               + "birthdate, password, questionNo, answer) "
-                               + "VALUES (?,?,?,?,?,?,?)";
+                               + "birthdate, password, questionNo, answer, "
+                               + "profilePicture)"
+                               + "VALUES (?,?,?,?,?,?,?,?)";
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, user.getfullname());
@@ -33,6 +37,7 @@ public class UserDB {
             ps.setString(5, user.getpassword());
             ps.setInt(6, Integer.parseInt(user.getquestionno()));
             ps.setString(7, user.getanswer());
+            ps.setBlob(8,user.getphoto());
             
             ps.executeUpdate();
             return true;
@@ -51,6 +56,8 @@ public class UserDB {
     {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
+        Blob blob;
+        InputStream blobStream;
         PreparedStatement ps = null;
         ResultSet results = null;
             
@@ -81,7 +88,13 @@ public class UserDB {
                     user.setpassword(results.getString(6));
                     user.setquestionno(results.getString(7));
                     user.setanswer(results.getString(8));
-                    
+                    blob = results.getBlob(9);
+                    if(blob != null) {
+                        blobStream = blob.getBinaryStream();
+                        user.setphoto(blobStream);
+                        blob.free();
+                       
+                    }
                     results.close();
                     return user;
                 }              
@@ -115,12 +128,25 @@ public class UserDB {
             ps = connection.prepareStatement(preparedSQL);
             rs = ps.executeQuery();
             ArrayList<User> users = new ArrayList<User>();
+            Blob blob;
+            InputStream blobstream;
             
             while(rs.next()) {
                 User user = new User();
                 user.setfullname(rs.getString("fullname"));
                 user.setusername(rs.getString("username"));
                 user.setemail(rs.getString("emailAddress"));
+                blob = rs.getBlob("profilePicture");
+                    if(blob != null) {
+                        blobstream = blob.getBinaryStream();
+                        user.setphoto(blobstream);
+                        blob.free();
+                        try {
+                            blobstream.reset();
+                        }catch (IOException e) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, e);
+                        }
+                    }
                 
                 users.add(user);
             }
@@ -146,22 +172,23 @@ public class UserDB {
         String preparedSQL = 
             "UPDATE User SET "
             + "fullname = ?, "
-            + "emailAddress = ?, "
             + "birthdate = ?, "
             + "password = ?, "
             + "questionNo = ?,"
-            + "answer = ?"
+            + "answer = ?,"
+            + "profilePicture = ?"    
             + "WHERE emailAddress = ?";
             
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, user.getfullname());
-            ps.setString(2, user.getemail());
-            ps.setString(3, user.getbirthdate());
-            ps.setString(4, user.getpassword());
-            ps.setString(5, user.getquestionno());
-            ps.setString(6, user.getanswer());
+            ps.setString(2, user.getbirthdate());
+            ps.setString(3, user.getpassword());
+            ps.setString(4, user.getquestionno());
+            ps.setString(5, user.getanswer());
+            ps.setBlob(6, user.getphoto());
             ps.setString(7, user.getemail());
+            
             
             ps.executeUpdate();
             return true;

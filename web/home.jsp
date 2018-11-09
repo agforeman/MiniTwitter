@@ -31,7 +31,10 @@
         <div class="flex-container">
             <div id="left_bar" class="side_column">
                 <div id="user_info">
-                    <img src="user_pic.jpg" alt="Profile Pic"/>
+                    <div id="profile_pic">
+                        <img src="${pageContext.request.contextPath}/tweet?action=get_image" 
+                             alt="Profile Pic"/>
+                    </div>    
                     <p><c:out value='${user.fullname}'/></p>
                     <p><c:out value='@${user.username}'/></p>
                     <p><b><c:out value='${numberOfTweets}'/></b> Tweets</p>
@@ -52,7 +55,10 @@
                 <div id="user_feed">
                     <c:forEach items="${tweets}" var="tweet_info">
                         <div class="tweets">
-                            <img src="user_pic.jpg" alt="Profile Pic"/>
+                            <div id="tweet_pic">
+                                <img src="${pageContext.request.contextPath}/tweet?action=get_image" 
+                                    alt="Profile Pic"/>
+                            </div>
                             <span><c:out value='${tweet_info.fullname}'/></span>
                             <br />
                             <span><c:out value='@${tweet_info.username}:'/></span>
@@ -79,12 +85,16 @@
                 </div>
             </div>
             <div id="right_bar" class="side_column">
-                <div id="suggested_users">
+                
                     <h2>Who to follow?</h2>
                     <c:forEach items="${users}" var="suggested_user">
                         <c:if test='${user.username != suggested_user.username}'>
                             <div class="users">
-                                <img src="user_pic.jpg" alt="Profile Pic"/>
+                                <div id ="follow_pic" >
+                                    <c:set var="user_email" value="${suggested_user.email}" scope="session"/>
+                                    <img src="/MiniTwitter/tweet?action=get_images"
+                                            alt="Profile Pic"/>
+                                </div>
                                 <span><c:out value='${suggested_user.fullname}'/></span>
                                 <br/>
                                 <span><c:out value='@${suggested_user.username}'/></span>
@@ -92,7 +102,7 @@
                             </div>
                         </c:if>
                     </c:forEach>
-                </div>
+                
             </div>
         </div>
         <div id="footer"><c:import url="footer.jsp" /></div>

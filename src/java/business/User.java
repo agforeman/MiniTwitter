@@ -5,6 +5,8 @@
  */
 package business;
 import java.io.Serializable;
+import java.io.InputStream;
+import java.sql.Blob;
 
 /**
  *
@@ -21,6 +23,7 @@ public class User implements Serializable {
     private String password;
     private String questionNo;
     private String answer;
+    private InputStream photo;
     
     public User()
     {
@@ -31,6 +34,7 @@ public class User implements Serializable {
         password = "";
         questionNo = "";
         answer = "";
+        photo = null;
     }
     //setters and getters
     public String getfullname()
@@ -88,6 +92,14 @@ public class User implements Serializable {
     public void setanswer(String answer)
     {
         this.answer = answer;
+    }
+    public InputStream getphoto()
+    {
+        return this.photo;
+    }
+    public void setphoto(InputStream photo)
+    {
+        this.photo = photo;
     }
   
 }

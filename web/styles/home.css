@@ -25,6 +25,24 @@ and open the template in the editor.
     margin: 0px;
     text-align: right;
 }
+#profile_pic img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 100px;
+}
+#tweet_pic img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 30px;
+}
+#follow_pic img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 30px;
+}
 
 #suggested_users, #user_feed {
     overflow: auto;

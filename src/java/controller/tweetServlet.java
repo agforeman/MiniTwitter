@@ -13,6 +13,8 @@ import dataaccess.TweetDB;
 import dataaccess.UserDB;
 import dataaccess.UserMentionDB;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -75,6 +78,8 @@ public class tweetServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         // TO DO GET USER NUMBER OF TWEETS
         int numberOfTweets = 0;
+        OutputStream o;
+        
         
         String url = "/login.jsp";
         
@@ -95,6 +100,45 @@ public class tweetServlet extends HttpServlet {
             session.setAttribute("numberOfTweets", numberOfTweets);
             
             url = "/home.jsp";
+        }
+        //get user's profile picture from User object
+        else if(action.equals("get_image")) {
+            if(user.getphoto() != null) {
+                response.setContentType("image/*");
+                InputStream iStream = user.getphoto();
+                byte[] bPhoto = IOUtils.toByteArray(iStream); // need byte type for outstream
+                o = response.getOutputStream();
+                o.write(bPhoto);
+                o.flush();
+                o.close();
+                iStream.reset(); //important. Inputstream values don't reset and will
+                                //not pass the values to bPhoto after the 1st photo.
+            }
+        }
+        
+        else if(action.equals("get_images")) {
+            String email = (String)session.getAttribute("user_email");
+            
+            ArrayList<User> users = (ArrayList<User>) session.getAttribute("users");
+            InputStream iStream;
+            
+            
+            for(int i = 0; i <users.size(); i++){
+                if(users.get(i).getemail().equals(email)) {
+                    iStream = users.get(i).getphoto();
+                    response.setContentType("image/*");
+                    byte[] bPhoto = IOUtils.toByteArray(iStream);
+                    o = response.getOutputStream();
+                    o.write(bPhoto);
+                    o.flush();
+                    o.close();
+                    iStream.reset();
+                    session.removeAttribute("user_email");
+                }
+            }
+            
+
+            
         }
                 
         getServletContext()

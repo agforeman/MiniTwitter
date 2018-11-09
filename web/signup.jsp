@@ -18,7 +18,7 @@
     <h1>Sign Up Form</h1>
     <div id="error_message" class="notVisible"></div>
     <form action="membership" method="post" onsubmit="return validateForm();"
-          id="signup_form">
+          id="signup_form" enctype="multipart/form-data">
          <c:choose>
             <c:when test="${user != null}">
                 <input type="hidden" name="action" value="update"> 
@@ -92,7 +92,11 @@
         <label class="pad_top"></label>
         <input type="text" id="security_answer" name="security_answer" class="notVisible"
                placeholder="Answer" required />
-        <span id="security_answer_error" class="notVisible">*</span><br />
+        <span id="security_answer_error" class="notVisible">*</span><br /><br />
+        
+        <label class="pad_top">Upload Picture:</label>
+        <input type="file" id=photo name="photo" />
+        <span id="upload_error" class="notVisible">*</span><br />
         
         <!-- Form buttons-->
         <c:choose>

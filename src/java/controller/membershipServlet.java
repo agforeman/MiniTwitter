@@ -10,6 +10,7 @@ import Util.MailUtilYahoo;
 import com.mysql.cj.util.StringUtils;
 import dataaccess.UserDB;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,11 +23,11 @@ import java.util.Random;
 import java.security.SecureRandom;
 import java.util.Base64;
 import javax.mail.*;
+import javax.servlet.annotation.MultipartConfig;
 
-
-
-
-
+@MultipartConfig(fileSizeThreshold=1024*1024*2,
+                 maxFileSize=1024*1024*10,
+                 maxRequestSize=1024*1024*20)
 public class membershipServlet extends HttpServlet {
 
     /**
@@ -71,6 +72,12 @@ public class membershipServlet extends HttpServlet {
             String answer = request.getParameter("security_answer");
             String password = request.getParameter("password");
             String confirm = request.getParameter("confirm_password");
+            javax.servlet.http.Part photo = request.getPart("photo");
+            InputStream inputPhoto = null; //input stream of photo upload
+            
+            if(photo != null){
+                inputPhoto = photo.getInputStream();
+            }
             
             // store data in User object
             User user = new User();
@@ -81,6 +88,7 @@ public class membershipServlet extends HttpServlet {
             user.setquestionno(questionNo);
             user.setanswer(answer);
             user.setpassword(password);
+            user.setphoto(inputPhoto);
             
             // store User object in request
             request.setAttribute("user", user); // TODO: Do we need to add the user to both the request and session below.
@@ -222,6 +230,13 @@ public class membershipServlet extends HttpServlet {
             String answer = request.getParameter("security_answer");
             String password = request.getParameter("password");
             String confirm = request.getParameter("confirm_password");
+            javax.servlet.http.Part photo = request.getPart("photo");
+            InputStream inputPhoto = null; //input stream of photo upload
+            
+            if(photo != null){
+                inputPhoto = photo.getInputStream();
+            }
+            
             
             //get user session and set user object from session
             HttpSession session = request.getSession();
@@ -233,6 +248,7 @@ public class membershipServlet extends HttpServlet {
             user.setquestionno(questionNo);
             user.setanswer(answer);
             user.setpassword(password);
+            user.setphoto(inputPhoto);
             
             // Check to make sure all the data sent by the user is valid
             StringBuilder errors = new StringBuilder();
