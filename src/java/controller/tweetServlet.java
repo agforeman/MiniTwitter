@@ -100,19 +100,28 @@ public class tweetServlet extends HttpServlet {
             session.setAttribute("numberOfTweets", numberOfTweets);
             
             url = "/home.jsp";
-        }
+        }                
         //get user's profile picture from User object
         else if(action.equals("get_image")) {
-            if(user.getphoto() != null) {
-                response.setContentType("image/*");
-                InputStream iStream = user.getphoto();
-                byte[] bPhoto = IOUtils.toByteArray(iStream); // need byte type for outstream
-                o = response.getOutputStream();
-                o.write(bPhoto);
-                o.flush();
-                o.close();
-                iStream.reset(); //important. Inputstream values don't reset and will
-                                //not pass the values to bPhoto after the 1st photo.
+            // Note this is inefficient!
+            String email = request.getParameter("email");
+            ArrayList<User> users = (ArrayList<User>) session.getAttribute("users");
+            
+            for(User u : users) {
+                if(email.equals(u.getemail())) {
+                    if(u.getphoto() != null) {
+                        response.setContentType("image/*");
+                        InputStream iStream = u.getphoto();
+                        byte[] bPhoto = IOUtils.toByteArray(iStream); // need byte type for outstream
+                        o = response.getOutputStream();
+                        o.write(bPhoto);
+                        o.flush();
+                        o.close();
+                        iStream.reset(); //important. Inputstream values don't reset and will
+                                        //not pass the values to bPhoto after the 1st photo.
+                        break;
+                    }
+                }   
             }
         }
         

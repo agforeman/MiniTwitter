@@ -128,8 +128,8 @@ public class UserDB {
             ps = connection.prepareStatement(preparedSQL);
             rs = ps.executeQuery();
             ArrayList<User> users = new ArrayList<User>();
-            Blob blob;
-            InputStream blobstream;
+            Blob blob = null;
+            InputStream blobstream = null;
             
             while(rs.next()) {
                 User user = new User();

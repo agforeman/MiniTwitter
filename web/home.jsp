@@ -32,14 +32,16 @@
             <div id="left_bar" class="side_column">
                 <div id="user_info">
                     <div id="profile_pic">
-                        <img src="${pageContext.request.contextPath}/tweet?action=get_image" 
+                        <img src="${pageContext.request.contextPath}/tweet?action=get_image&email=${user.email}" 
                              alt="Profile Pic"/>
                     </div>    
                     <p><c:out value='${user.fullname}'/></p>
                     <p><c:out value='@${user.username}'/></p>
                     <p><b><c:out value='${numberOfTweets}'/></b> Tweets</p>
                 </div>
-                <div id="trends">TRENDS</div>
+                <div id="trends">
+                    <h2>TRENDS</h2>
+                </div>
             </div>
             <div id="middle_bar" class="main_column">
                 <div id="tweet_composer">
@@ -56,7 +58,7 @@
                     <c:forEach items="${tweets}" var="tweet_info">
                         <div class="tweets">
                             <div id="tweet_pic">
-                                <img src="${pageContext.request.contextPath}/tweet?action=get_image" 
+                            <img src="${pageContext.request.contextPath}/tweet?action=get_image&email=${tweet_info.emailAddress}" 
                                     alt="Profile Pic"/>
                             </div>
                             <span><c:out value='${tweet_info.fullname}'/></span>
@@ -87,12 +89,11 @@
             <div id="right_bar" class="side_column">
                 
                     <h2>Who to follow?</h2>
-                    <c:forEach items="${users}" var="suggested_user">
-                        <c:if test='${user.username != suggested_user.username}'>
+                    <c:forEach items="${users}" var="suggested_user">   
+                        <c:if test='${user.email != suggested_user.email}'>
                             <div class="users">
                                 <div id ="follow_pic" >
-                                    <c:set var="user_email" value="${suggested_user.email}" scope="session"/>
-                                    <img src="/MiniTwitter/tweet?action=get_images"
+                                    <img src="/MiniTwitter/tweet?action=get_image&email=${suggested_user.email}"
                                             alt="Profile Pic"/>
                                 </div>
                                 <span><c:out value='${suggested_user.fullname}'/></span>
