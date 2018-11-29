@@ -296,8 +296,18 @@ public class membershipServlet extends HttpServlet {
                 url = "/signup.jsp";
             }
             else {
+                // salt and hash password
                 // update user in the database
                 // display successful update to user and update session with new info
+                String salt = generatePassword(32); //32 bytes
+                String hPass = "";
+                try {
+                    hPass = hashPassword(password + salt);
+                }catch (NoSuchAlgorithmException ex) {
+                    System.out.println(ex);
+                }
+                user.setsalt(salt);
+                user.setpassword(hPass);
                 UserDB.update(user);
                 request.setAttribute("signupError", "Update Successful!");
                 session.setAttribute("user", user);
