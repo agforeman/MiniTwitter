@@ -24,6 +24,8 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import javax.mail.*;
 import javax.servlet.annotation.MultipartConfig;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
 
 @MultipartConfig(fileSizeThreshold=1024*1024*2,
                  maxFileSize=1024*1024*10,
@@ -74,9 +76,20 @@ public class membershipServlet extends HttpServlet {
             String confirm = request.getParameter("confirm_password");
             javax.servlet.http.Part photo = request.getPart("photo");
             InputStream inputPhoto = null; //input stream of photo upload
+            String salt = "";
+            String hPass = ""; //salted and hashed password
             
             if(photo != null){
                 inputPhoto = photo.getInputStream();
+            }
+            
+            //Salt and Hash password
+            salt = generatePassword(32);  //32 indicates bytes
+            password += salt; //add salt to existing password
+            try {
+               hPass = hashPassword(password);
+            }catch (NoSuchAlgorithmException ex) {
+                System.out.println(ex);
             }
             
             // store data in User object
@@ -87,7 +100,8 @@ public class membershipServlet extends HttpServlet {
             user.setbirthdate(birthDate);        
             user.setquestionno(questionNo);
             user.setanswer(answer);
-            user.setpassword(password);
+            user.setpassword(hPass);
+            user.setsalt(salt);
             user.setphoto(inputPhoto);
             
             // store User object in request
@@ -143,35 +157,49 @@ public class membershipServlet extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String remember = request.getParameter("remember");
+            String hPass = "";
+            String salt = "";
             
             HttpSession session = request.getSession();
             User user = UserDB.search(email);  //search for user by email in database.
-            
-            
+
             //no user found in database
             if(user == null)
             {
                 request.setAttribute("loginError", "No user found. If this is"
                         + " your first time, please use the Signup link");
             }
-            //if user exists in database, check email and password for user
-            else if(user.getemail().equalsIgnoreCase(email) && user.getpassword().equals(password))
-            {
-                session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
-                request.removeAttribute("loginError"); //removes lingering login errors for a user.
-                /*if(remember != null)
-                {
-                    Cookie c = new Cookie("emailCookie", email);
-                    c.setMaxAge(60*60*24*365*2);
-                    c.setPath("/");
-                    response.addCookie(c);
-                }*/
-                url = "/home.jsp";
-            }
             else
             {
-                request.setAttribute("loginError","Login failed! Check password");
-                url = "/login.jsp";
+                hPass = user.getpassword(); //hashed password
+                salt = user.getsalt(); //user salt
+                
+                //generate hash password with user inputted password and existing salt.
+                try {
+                    password = hashPassword(password + salt);
+                 }catch (NoSuchAlgorithmException ex) {
+                    System.out.println(ex);
+                }
+            
+                //verify email and password of user
+                if(user.getemail().equalsIgnoreCase(email) && user.getpassword().equals(password))
+                {
+                    session.setAttribute("user", user); //once creds are confirmed, set the user session attribute.
+                    request.removeAttribute("loginError"); //removes lingering login errors for a user.
+                    if(remember != null)
+                    {
+                        Cookie c = new Cookie("emailCookie", email);
+                        c.setMaxAge(60*60*24*365*2);
+                        c.setPath("/");
+                        response.addCookie(c);
+                    }
+                    url = "/home.jsp";
+                }
+                else
+                {
+                    request.setAttribute("loginError","Login failed! Check password");
+                    url = "/login.jsp";
+                }
             }
         }
         //If user signs out of account, invalidate session and send to login page
@@ -200,13 +228,22 @@ public class membershipServlet extends HttpServlet {
                     && user.getanswer().equalsIgnoreCase(answer))
             {
                String newPassword = generatePassword(4); //generate new password(4 bytes)
-               user.setpassword(newPassword); //set new password to User object
+               String salt = generatePassword(32); //32 byte salt
+               String hPass = "";
+               //hash salted password
+                try {
+                    hPass = hashPassword(newPassword + salt);
+                }catch (NoSuchAlgorithmException ex) {
+                    System.out.println(ex);
+                }
+                user.setsalt(salt); //set new salt to User object
+               user.setpassword(hPass); //set new hash password to User object
 
                 // update user in the database
                 UserDB.update(user);
                 
                 //send user an email with new password
-                sendEmail(user.getemail(), user.getpassword(), user.getfullname());
+                sendEmail(user.getemail(), newPassword, user.getfullname());
 
                 request.setAttribute("forgotMessage", "Email has been sent!"); //let user know email has been sent
                 url="/login.jsp";
@@ -452,8 +489,8 @@ public class membershipServlet extends HttpServlet {
     /*****************************************************************
      *                    generatePassword()                         *
      *****************************************************************
-     * Helper function for forgot password action. Creates a randomly*
-     * generated password with 8 characters and returns it.          *
+     * Function that generates a new password or salt. Creates a     * 
+     * randomly generated string of n bytes and returns it.          *
      *                                                               *
      * @param bytes number of bytes for new password                 *
      * @return string                                                *
@@ -465,6 +502,34 @@ public class membershipServlet extends HttpServlet {
         r.nextBytes(tempBytes);
         return Base64.getEncoder().encodeToString(tempBytes);
 
+    }
+    
+     /****************************************************************
+     *                    hashPassword()                             *
+     *****************************************************************
+     * Helper function for hash password action. This code uses      * 
+     * SHA-256 to hash a password.                                   *
+     *                                                               *
+     * @param String password user password + salt                   *
+     * @throws NoSuchAlgorithmException                              *
+     * @return string                                                *
+     *****************************************************************/
+    
+    protected static String hashPassword(String password)
+            throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.reset();
+        md.update(password.getBytes());
+        byte[] mdArray = md.digest();
+        StringBuilder sb = new StringBuilder(mdArray.length *2);
+        for(byte b: mdArray) {
+            int v = b & 0xff;
+            if(v < 16) {
+                sb.append('0');
+            }
+            sb.append(Integer.toHexString(v));
+        }
+        return sb.toString();
     }
     
     /*****************************************************************

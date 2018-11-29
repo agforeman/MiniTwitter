@@ -21,6 +21,7 @@ public class User implements Serializable {
     private String emailAddress;
     private String birthdate;
     private String password;
+    private String salt;
     private String questionNo;
     private String answer;
     private InputStream photo;
@@ -32,6 +33,7 @@ public class User implements Serializable {
         emailAddress = "";
         birthdate = "";
         password = "";
+        salt = "";
         questionNo = "";
         answer = "";
         photo = null;
@@ -76,6 +78,14 @@ public class User implements Serializable {
     public void setpassword(String password)
     {
         this.password = password;
+    }
+    public String getsalt()
+    {
+        return this.salt;
+    }
+    public void setsalt(String salt)
+    {
+        this.salt = salt;
     }
     public String getquestionno()
     {

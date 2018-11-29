@@ -123,33 +123,7 @@ public class tweetServlet extends HttpServlet {
                     }
                 }   
             }
-        }
-        
-        else if(action.equals("get_images")) {
-            String email = (String)session.getAttribute("user_email");
-            
-            ArrayList<User> users = (ArrayList<User>) session.getAttribute("users");
-            InputStream iStream;
-            
-            
-            for(int i = 0; i <users.size(); i++){
-                if(users.get(i).getemail().equals(email)) {
-                    iStream = users.get(i).getphoto();
-                    response.setContentType("image/*");
-                    byte[] bPhoto = IOUtils.toByteArray(iStream);
-                    o = response.getOutputStream();
-                    o.write(bPhoto);
-                    o.flush();
-                    o.close();
-                    iStream.reset();
-                    session.removeAttribute("user_email");
-                }
-            }
-            
-
-            
-        }
-                
+        }      
         getServletContext()
             .getRequestDispatcher(url)
             .forward(request, response);

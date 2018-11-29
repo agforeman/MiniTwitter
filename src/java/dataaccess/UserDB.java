@@ -25,7 +25,7 @@ public class UserDB {
             
             String preparedSQL = "INSERT INTO "
                                + "user(fullname, username, emailAddress, "
-                               + "birthdate, password, questionNo, answer, "
+                               + "birthdate, password, salt, questionNo, answer, "
                                + "profilePicture)"
                                + "VALUES (?,?,?,?,?,?,?,?)";
         try {
@@ -35,9 +35,10 @@ public class UserDB {
             ps.setString(3, user.getemail());
             ps.setString(4, user.getbirthdate());
             ps.setString(5, user.getpassword());
-            ps.setInt(6, Integer.parseInt(user.getquestionno()));
-            ps.setString(7, user.getanswer());
-            ps.setBlob(8,user.getphoto());
+            ps.setString(6, user.getsalt());
+            ps.setInt(7, Integer.parseInt(user.getquestionno()));
+            ps.setString(8, user.getanswer());
+            ps.setBlob(9,user.getphoto());
             
             ps.executeUpdate();
             return true;
@@ -86,9 +87,10 @@ public class UserDB {
                     user.setemail(results.getString(4));
                     user.setbirthdate(results.getString(5));
                     user.setpassword(results.getString(6));
-                    user.setquestionno(results.getString(7));
-                    user.setanswer(results.getString(8));
-                    blob = results.getBlob(9);
+                    user.setsalt(results.getString(7));
+                    user.setquestionno(results.getString(8));
+                    user.setanswer(results.getString(9));
+                    blob = results.getBlob(10);
                     if(blob != null) {
                         blobStream = blob.getBinaryStream();
                         user.setphoto(blobStream);
@@ -174,6 +176,7 @@ public class UserDB {
             + "fullname = ?, "
             + "birthdate = ?, "
             + "password = ?, "
+            + "salt = ?, "    
             + "questionNo = ?,"
             + "answer = ?,"
             + "profilePicture = ?"    
@@ -184,10 +187,11 @@ public class UserDB {
             ps.setString(1, user.getfullname());
             ps.setString(2, user.getbirthdate());
             ps.setString(3, user.getpassword());
-            ps.setString(4, user.getquestionno());
-            ps.setString(5, user.getanswer());
-            ps.setBlob(6, user.getphoto());
-            ps.setString(7, user.getemail());
+            ps.setString(4, user.getsalt());
+            ps.setString(5, user.getquestionno());
+            ps.setString(6, user.getanswer());
+            ps.setBlob(7, user.getphoto());
+            ps.setString(8, user.getemail());
             
             
             ps.executeUpdate();
