@@ -60,23 +60,12 @@ public class UserTweetInfo implements Serializable {
         return this.message;
     }
     public void setmessage(String message) {
-        String newMessage= null;
-        int startInd = 0;
-        while(message.indexOf("@", startInd)!= -1)
-        {
-            int indexOf = message.indexOf("@", startInd);
-            int indexOfSpace = message.indexOf(" ", indexOf+1);
-            if(indexOfSpace == -1) {
-                indexOfSpace = message.length();
-            }
-            String mention = message.substring(indexOf, indexOfSpace);
-            newMessage = message.replace(mention, "<a class='blueX'>" + mention +
-                              "</a>");
-            message = newMessage;
-            //21 equals the amount of added HTML chars. We want the new starting index
-            //to be after the inserted modified code. This handles more than one mention.
-            startInd = indexOf+21+mention.length();
-        }
+        String at = "@";
+        String hashtag = "#";
+        
+        message = colorText(message, at);
+        message = colorText(message, hashtag);
+        
         this.message = message;
     }
     public String getmentions() {
@@ -91,4 +80,29 @@ public class UserTweetInfo implements Serializable {
     public void setdate(String date) {
         this.date = date;
     }
+    
+    //helper function for coloring hashtags and user mentions
+    public String colorText(String message, String character)
+    {
+        String newMessage= null;
+        int startInd = 0;
+        while(message.indexOf(character, startInd)!= -1)
+        {
+            int indexOf = message.indexOf(character, startInd);
+            int indexOfSpace = message.indexOf(" ", indexOf+1);
+            if(indexOfSpace == -1) {
+                indexOfSpace = message.length();
+            }
+            String mention = message.substring(indexOf, indexOfSpace);
+            newMessage = message.replace(mention, "<a class='blueX'>" + mention +
+                              "</a>");
+            message = newMessage;
+            //21 equals the amount of added HTML chars. We want the new starting index
+            //to be after the inserted modified code. This handles more than one mention.
+            startInd = indexOf+21+mention.length();
+        }
+        return message;
+    }
 }
+
+
