@@ -16,6 +16,7 @@ public class User implements Serializable {
     //define attributes fullname, ...
     
     //define set/get methods for all attributes.
+    private int id;
     private String fullname;
     private String username;
     private String emailAddress;
@@ -27,7 +28,8 @@ public class User implements Serializable {
     private InputStream photo;
     
     public User()
-    {
+    {   
+        id = 0;
         fullname = "";
         username = "";
         emailAddress = "";
@@ -39,6 +41,14 @@ public class User implements Serializable {
         photo = null;
     }
     //setters and getters
+    public int getid()
+    {
+        return this.id;
+    }
+    public void setid(int id)
+    {
+        this.id = id;
+    }
     public String getfullname()
     {
         return this.fullname;

@@ -7,8 +7,10 @@ package controller;
 
 import business.Tweet;
 import business.User;
+import business.UserFollow;
 import business.UserTweetInfo;
 import business.UserMention;
+import dataaccess.FollowDB;
 import dataaccess.TweetDB;
 import dataaccess.UserDB;
 import dataaccess.UserMentionDB;
@@ -76,11 +78,8 @@ public class tweetServlet extends HttpServlet {
         HttpSession session = request.getSession();
         // Test if there is a user signed in.
         User user = (User) session.getAttribute("user");
-        // TO DO GET USER NUMBER OF TWEETS
         int numberOfTweets = 0;
         OutputStream o;
-        
-        
         String url = "/login.jsp";
         
         // If no user go to login
@@ -98,7 +97,6 @@ public class tweetServlet extends HttpServlet {
             
             session.setAttribute("tweets", tweets);
             session.setAttribute("numberOfTweets", numberOfTweets);
-            
             url = "/home.jsp";
         }                
         //get user's profile picture from User object
@@ -123,10 +121,21 @@ public class tweetServlet extends HttpServlet {
                     }
                 }   
             }
-        }      
+        }
+        else if(action.equals("get_allfollows"))
+        {
+            ArrayList<UserFollow> follows;
+            ArrayList<User> users = (ArrayList<User>) session.getAttribute("users"); //might use this
+            int userID = user.getid();
+            follows = FollowDB.selectFollowsByUser(userID);
+            session.setAttribute("userFollows", follows);
+            url = "/home.jsp";
+        }
+
+        
         getServletContext()
             .getRequestDispatcher(url)
-            .forward(request, response);
+             .forward(request, response);
     }
 
     /**
@@ -213,7 +222,6 @@ public class tweetServlet extends HttpServlet {
                     }
                 }
             }
-            
             //if there are user mentions, delete mentions
             if(mentions){
                 try {
@@ -224,7 +232,6 @@ public class tweetServlet extends HttpServlet {
                         Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
                     }
             }
-
             try {
                 TweetDB.delete(tweetID);
             } catch (ClassNotFoundException ex) {
@@ -236,6 +243,48 @@ public class tweetServlet extends HttpServlet {
             tweets.clear(); //clear tweets array to update
             tweets = TweetDB.selectTweetsByUser(email);
             session.setAttribute("tweets", tweets);
+        }
+        if(action.equals("follow_user"))
+        {
+            int userID = user.getid();
+            String followedUserID = request.getParameter("followedUserID");
+            UserFollow follow = new UserFollow();
+            
+            follow.setuserID(userID);
+            follow.setfollowedUserID(Integer.parseInt(followedUserID));
+            
+            try {
+                FollowDB.insert(follow);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            ArrayList<UserFollow> follows;
+            follows = FollowDB.selectFollowsByUser(userID);
+            session.setAttribute("userFollows", follows);
+        }
+        if(action.equals("unfollow_user"))
+        {
+            int userID = user.getid();
+            String followedUserID = request.getParameter("followedUserID");
+            UserFollow follow = new UserFollow();
+            
+            follow.setuserID(userID);
+            follow.setfollowedUserID(Integer.parseInt(followedUserID));
+            
+            try {
+                FollowDB.delete(follow);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ArrayList<UserFollow> follows;
+            follows = FollowDB.selectFollowsByUser(userID);
+            session.setAttribute("userFollows", follows);
+            
         }
         
         int numberOfTweets = TweetDB.numberOfUserTweets(user);

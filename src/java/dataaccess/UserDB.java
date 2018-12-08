@@ -82,6 +82,7 @@ public class UserDB {
                 results = ps.executeQuery(preparedSQL);
                 if(results.next()){
                     User user = new User();
+                    user.setid(results.getInt(1));
                     user.setfullname(results.getString(2));
                     user.setusername(results.getString(3));
                     user.setemail(results.getString(4));
@@ -135,6 +136,7 @@ public class UserDB {
             
             while(rs.next()) {
                 User user = new User();
+                user.setid(rs.getInt("userID"));
                 user.setfullname(rs.getString("fullname"));
                 user.setusername(rs.getString("username"));
                 user.setemail(rs.getString("emailAddress"));

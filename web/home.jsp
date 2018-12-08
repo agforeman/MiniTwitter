@@ -28,6 +28,9 @@
         <c:if test="${tweets == null}">
             <c:redirect url = "/tweet?action=get_tweets"/>
         </c:if>
+        <c:if test="${userFollows == null}">
+            <c:redirect url = "/tweet?action=get_allfollows"/>
+        </c:if>
         <div class="flex-container">
             <div id="left_bar" class="side_column">
                 <div id="user_info">
@@ -100,6 +103,28 @@
                                 <br/>
                                 <span><c:out value='@${suggested_user.username}'/></span>
                                 <br />
+                                <form action="tweet" method="post"/>
+                                    <input type="hidden" name="action" value="follow_user"/>
+                                    <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
+                                    <input type="submit" value="Follow" class="button delete_button"> 
+                                </form>
+                                <form action="tweet" method="post">
+                                    <c:forEach items="${userFollows}" var="user_follows">
+                                    <c:choose>
+                                        <c:when test="${suggested_user.id.equals(user_follows.followedUserID)}">
+                                            <input type="hidden" name="action" value="unfollow_user"/>
+                                            <input type="hidden" name="followedUserID" value="${user_follows.followedUserID}"/>
+                                            <input type="submit" value="Unfollow" class="button delete_button">   
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="hidden" name="action" value="follow_user"/>
+                                            <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
+                                            <input type="submit" value="Follow" class="button delete_button"> 
+                                        </c:otherwise>
+                                    </c:choose>
+                                    </c:forEach>
+                                </form>
+                                
                             </div>
                         </c:if>
                     </c:forEach>
