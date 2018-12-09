@@ -27,7 +27,7 @@ public class UserDB {
                                + "user(fullname, username, emailAddress, "
                                + "birthdate, password, salt, questionNo, answer, "
                                + "profilePicture)"
-                               + "VALUES (?,?,?,?,?,?,?,?)";
+                               + "VALUES (?,?,?,?,?,?,?,?,?)";
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, user.getfullname());

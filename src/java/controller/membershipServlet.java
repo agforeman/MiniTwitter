@@ -86,8 +86,10 @@ public class membershipServlet extends HttpServlet {
             //Salt and Hash password
             salt = generatePassword(32);  //32 indicates bytes
             password += salt; //add salt to existing password
+            confirm += salt;
             try {
                hPass = hashPassword(password);
+               confirm = hashPassword(confirm);
             }catch (NoSuchAlgorithmException ex) {
                 System.out.println(ex);
             }
@@ -121,7 +123,7 @@ public class membershipServlet extends HttpServlet {
             if (isAvailable) {
                 // Check to make sure all the data sent by the user is valid
                 StringBuilder errors = new StringBuilder();
-                errors.append("One or more input fields were invalid when trying to sign you up!");
+                errors.append("One or more input fields were invalid when trying to sign you up! \n");
                 inputValid = validate_user_input(user, confirm, errors);
                 if (!inputValid) {
                     request.setAttribute("signupError", errors);
