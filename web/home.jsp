@@ -92,6 +92,7 @@
             <div id="right_bar" class="side_column">
                 
                     <h2>Who to follow?</h2>
+                    <c:set var="done" value='${false}'/>
                     <c:forEach items="${users}" var="suggested_user">   
                         <c:if test='${user.email != suggested_user.email}'>
                             <div class="users">
@@ -101,30 +102,42 @@
                                 </div>
                                 <span><c:out value='${suggested_user.fullname}'/></span>
                                 <br/>
-                                <span><c:out value='@${suggested_user.username}'/></span>
-                                <br />
+                                <span><c:out value='@${suggested_user.username}'/></span>                                         
+                                
+                                <!-- Follow/Unfollow button form -->
                                 <form action="tweet" method="post"/>
+                                <c:choose> 
+                                <c:when test='${empty userFollows}'>
+                                    <!-- Display the follow buttons if there are no followed users -->
                                     <input type="hidden" name="action" value="follow_user"/>
                                     <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
                                     <input type="submit" value="Follow" class="button delete_button"> 
+                                </c:when>
+                                <c:otherwise>
+                                <!-- Display the un-follow or the follow button if there are followed users-->
+                                <c:forEach items="${userFollows}" var="user_follows">
+                                    <!-- Processing each followed user in the follow list -->
+                                    <c:if test="${suggested_user.id.equals(user_follows.followedUserID)}">
+                                        <c:set var="done" value='${true}'/>
+                                        <!-- If the followed user we have == the suggested user put unfollow only
+                                             if you haven't already assigned a button -->
+                                        <input type="hidden" name="action" value="unfollow_user"/>
+                                        <input type="hidden" name="followedUserID" value="${user_follows.followedUserID}"/>
+                                        <input type="submit" value="Unfollow" class="button delete_button">
+                                    </c:if>                           
+                                </c:forEach>
+                                <!-- If the followed user is not the suggested user put follow -->
+                                <c:if test='${done == false}'>
+                                    <!-- Only add the follow button to this suggested user if you haven't
+                                         done so already -->
+                                    <input type="hidden" name="action" value="follow_user"/>
+                                    <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
+                                    <input type="submit" value="Follow" class="button delete_button">
+                                </c:if>    
+                                <c:set var="done" value='${false}'/>
+                                </c:otherwise>
+                                </c:choose>
                                 </form>
-                                <form action="tweet" method="post">
-                                    <c:forEach items="${userFollows}" var="user_follows">
-                                    <c:choose>
-                                        <c:when test="${suggested_user.id.equals(user_follows.followedUserID)}">
-                                            <input type="hidden" name="action" value="unfollow_user"/>
-                                            <input type="hidden" name="followedUserID" value="${user_follows.followedUserID}"/>
-                                            <input type="submit" value="Unfollow" class="button delete_button">   
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input type="hidden" name="action" value="follow_user"/>
-                                            <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
-                                            <input type="submit" value="Follow" class="button delete_button"> 
-                                        </c:otherwise>
-                                    </c:choose>
-                                    </c:forEach>
-                                </form>
-                                
                             </div>
                         </c:if>
                     </c:forEach>
