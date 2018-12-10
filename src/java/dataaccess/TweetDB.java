@@ -107,7 +107,70 @@ public class TweetDB {
             pool.freeConnection(connection);
         }
     }
-    
+    public static int numberOfFollowers(String email){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int numberOfFollowers = 0;
+        
+        String preparedSQL = "SELECT followed "
+                           + "FROM user_followed_number_view "
+                           + "WHERE emailAddress = ? ";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, email);
+          
+            
+            rs = ps.executeQuery();
+            while(rs.next()) {
+                numberOfFollowers = rs.getInt("followed");
+            }
+            return numberOfFollowers;
+        } catch (SQLException  e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return numberOfFollowers;
+        } catch (Exception e) {
+            return numberOfFollowers;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+    }
+    public static int numberOfFollowing(String email){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int numberOfFollowing = 0;
+        
+        String preparedSQL = "SELECT following "
+                           + "FROM user_following_number_view "
+                           + "WHERE emailAddress = ? ";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, email);
+          
+            
+            rs = ps.executeQuery();
+            while(rs.next()) {
+                numberOfFollowing = rs.getInt("following");
+            }
+            return numberOfFollowing;
+        } catch (SQLException  e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return numberOfFollowing;
+        } catch (Exception e) {
+            return numberOfFollowing;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+    }
     public static ArrayList<UserTweetInfo> selectTweetsByUser(String email) 
     {
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -116,13 +179,12 @@ public class TweetDB {
         ResultSet rs = null;
             
         String preparedSQL = "SELECT * FROM user_feed_view "
-                           + "WHERE emailAddress = ? "
-                           + "OR userMentionedEmail = ?";
+                           + "WHERE userEmail = ? "
+                           + "ORDER BY date DESC";
         
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, email);
-            ps.setString(2, email);
             
             rs = ps.executeQuery();
             ArrayList<UserTweetInfo> tweets = new ArrayList<UserTweetInfo>();
@@ -134,7 +196,6 @@ public class TweetDB {
                 tweet.setusername(rs.getString("username"));
                 tweet.setfullname(rs.getString("fullname"));
                 tweet.setmessage(rs.getString("message"));
-                tweet.setmentions(rs.getString("userMentionedEmail"));
                 tweet.setdate(rs.getString("date"));
                 
                 tweets.add(tweet);
@@ -152,4 +213,47 @@ public class TweetDB {
             pool.freeConnection(connection);
         }
     }
+    public static ArrayList<UserTweetInfo> getNewTweets(String email){
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+            
+        String preparedSQL = "SELECT * FROM new_tweet_view "
+                           + "WHERE userEmail = ? "
+                           + "AND last_login_time < date "
+                           + "ORDER BY date DESC";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, email);
+            
+            rs = ps.executeQuery();
+            ArrayList<UserTweetInfo> tweets = new ArrayList<UserTweetInfo>();
+            
+            while(rs.next()) {
+                UserTweetInfo tweet = new UserTweetInfo();
+                tweet.settweetid(rs.getInt("tweetID"));
+                tweet.setemailAddress(rs.getString("emailAddress"));
+                tweet.setusername(rs.getString("username"));
+                tweet.setfullname(rs.getString("fullname"));
+                tweet.setmessage(rs.getString("message"));
+                tweet.setdate(rs.getString("date"));
+                
+                tweets.add(tweet);
+            }
+            connection.close();
+            return tweets;
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return null;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            DBUtil.closeResultSet(rs);
+            pool.freeConnection(connection);
+        } 
+    }
+    
 }

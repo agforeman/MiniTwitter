@@ -12,8 +12,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -168,6 +170,42 @@ public class UserDB {
         }
     }
     
+    public static ArrayList<String> getNewFollowers(String email) 
+    {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+            
+        String preparedSQL = "SELECT emailAddress "
+                           + "FROM new_follower_view "
+                           + "WHERE followedEmailAddress = ? "
+                           + "AND followDate > last_login_time "
+                           + "ORDER BY followDate DESC";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setString(1, email);
+            
+            rs = ps.executeQuery();
+            ArrayList<String> newFollowers = new ArrayList<String>();
+            
+            while(rs.next()) {
+                newFollowers.add(rs.getString("emailAddress"));
+            }
+            connection.close();
+            return newFollowers;
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return null;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            DBUtil.closeResultSet(rs);
+            pool.freeConnection(connection);
+        }
+    }
     public static boolean update(User user) {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -208,6 +246,34 @@ public class UserDB {
             pool.freeConnection(connection);
         }
        
+    }
+    public static boolean updateLoginTime(String email) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+            
+        String preparedSQL = 
+            "UPDATE User SET "
+            + "last_login_time = ? "
+            + "WHERE emailAddress = ?";
+            
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+            ps.setString(1, timeStamp);    
+            ps.setString(2, email);
+            ps.executeUpdate();
+            return true;
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return false;
+        }finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+               
     }
     
 }

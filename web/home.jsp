@@ -41,6 +41,8 @@
                     <p><c:out value='${user.fullname}'/></p>
                     <p><c:out value='@${user.username}'/></p>
                     <p><b><c:out value='${numberOfTweets}'/></b> Tweets</p>
+                    <p><b><c:out value='${numberOfFollowers}'/></b> Follower(s)!</p>
+                    <p>Following: <b><c:out value='${numberOfFollowing}'/></b> User(s)!</p>
                 </div>
                 <div id="trends">
                     <h2>TRENDS</h2>

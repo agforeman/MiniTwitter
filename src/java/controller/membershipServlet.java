@@ -7,7 +7,9 @@ package controller;
 
 import business.User;
 import Util.MailUtilYahoo;
+import business.UserTweetInfo;
 import com.mysql.cj.util.StringUtils;
+import dataaccess.TweetDB;
 import dataaccess.UserDB;
 import java.io.IOException;
 import java.io.InputStream;
@@ -195,6 +197,19 @@ public class membershipServlet extends HttpServlet {
                         c.setPath("/");
                         response.addCookie(c);
                     }
+                    // UPDATE NOTIFICATIONS
+                    ArrayList<String> new_followers;
+                    ArrayList<UserTweetInfo> new_tweets;
+                    
+                    new_followers = UserDB.getNewFollowers(email);
+                    new_tweets = TweetDB.getNewTweets(email);
+                    
+                    session.setAttribute("newFollowers", new_followers);
+                    session.setAttribute("newTweets", new_tweets);
+                    
+                    // UPDATE last_login_time here?
+                    UserDB.updateLoginTime(email);
+                    
                     url = "/home.jsp";
                 }
                 else

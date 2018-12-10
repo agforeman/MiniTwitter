@@ -79,6 +79,8 @@ public class tweetServlet extends HttpServlet {
         // Test if there is a user signed in.
         User user = (User) session.getAttribute("user");
         int numberOfTweets = 0;
+        int numberOfFollowers = 0;
+        int numberOfFollowing = 0;
         OutputStream o;
         String url = "/login.jsp";
         
@@ -94,8 +96,12 @@ public class tweetServlet extends HttpServlet {
             String email = user.getemail();
             tweets = TweetDB.selectTweetsByUser(email);
             numberOfTweets = TweetDB.numberOfUserTweets(user);
+            numberOfFollowers = TweetDB.numberOfFollowers(email);
+            numberOfFollowing = TweetDB.numberOfFollowing(email);
             
             session.setAttribute("tweets", tweets);
+            session.setAttribute("numberOfFollowers", numberOfFollowers);
+            session.setAttribute("numberOfFollowing", numberOfFollowing);
             session.setAttribute("numberOfTweets", numberOfTweets);
             url = "/home.jsp";
         }                
@@ -262,8 +268,19 @@ public class tweetServlet extends HttpServlet {
             }
             
             ArrayList<UserFollow> follows;
+            ArrayList<UserTweetInfo> tweets;
+            int numFollowing = 0;
+
+            user = (User) session.getAttribute("user");
+            String email = user.getemail();
+            
             follows = FollowDB.selectFollowsByUser(userID);
+            tweets = TweetDB.selectTweetsByUser(email);
+            numFollowing = TweetDB.numberOfFollowing(email);
+
+            session.setAttribute("tweets", tweets);
             session.setAttribute("userFollows", follows);
+            session.setAttribute("numberOfFollowing", numFollowing);
         }
         if(action.equals("unfollow_user"))
         {
@@ -282,8 +299,19 @@ public class tweetServlet extends HttpServlet {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             ArrayList<UserFollow> follows;
+            ArrayList<UserTweetInfo> tweets;
+            int numFollowing = 0;
+            
+            user = (User) session.getAttribute("user");
+            String email = user.getemail();
+            
             follows = FollowDB.selectFollowsByUser(userID);
+            tweets = TweetDB.selectTweetsByUser(email);
+            numFollowing = TweetDB.numberOfFollowing(email);
+            
+            session.setAttribute("tweets", tweets);
             session.setAttribute("userFollows", follows);
+            session.setAttribute("numberOfFollowing", numFollowing);
             
         }
         
