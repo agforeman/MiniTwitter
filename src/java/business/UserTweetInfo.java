@@ -94,7 +94,7 @@ public class UserTweetInfo implements Serializable {
                 indexOfSpace = message.length();
             }
             String mention = message.substring(indexOf, indexOfSpace);
-            newMessage = message.replace(mention, "<a class='blueX'>" + mention +
+            newMessage = message.replaceFirst(mention, "<a class='blueX'>" + mention +
                               "</a>");
             message = newMessage;
             //21 equals the amount of added HTML chars. We want the new starting index
