@@ -5,12 +5,14 @@
  */
 package controller;
 
+import business.HashTag;
 import business.Tweet;
 import business.User;
 import business.UserFollow;
 import business.UserTweetInfo;
 import business.UserMention;
 import dataaccess.FollowDB;
+import dataaccess.HashTagDB;
 import dataaccess.TweetDB;
 import dataaccess.UserDB;
 import dataaccess.UserMentionDB;
@@ -125,7 +127,6 @@ public class tweetServlet extends HttpServlet {
         else if(action.equals("get_allfollows"))
         {
             ArrayList<UserFollow> follows;
-            ArrayList<User> users = (ArrayList<User>) session.getAttribute("users"); //might use this
             int userID = user.getid();
             follows = FollowDB.selectFollowsByUser(userID);
             session.setAttribute("userFollows", follows);
@@ -161,9 +162,13 @@ public class tweetServlet extends HttpServlet {
             String message = request.getParameter("user_tweet");
             ArrayList<String> mentions = null; //ArrayList used if more than one user is mentioned. 
             UserMention userMention = new UserMention();
+            HashTag hash = new HashTag();
+            ArrayList<String> hashTags = null; //Arraylist used if more than one hashtag is used
             
             //find usernames that are mentioned. Returned values are the email addresses of usernames.
             mentions = findMentions(message);
+            //find hashtags that are used.
+            hashTags = findHashTags(message);
             //build tweet object
             Tweet tweet = new Tweet();
             tweet.setcomposerEmail(composerEmail);
@@ -202,6 +207,56 @@ public class tweetServlet extends HttpServlet {
                         Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
                     }
                 }
+            }
+            //if hashTags, check for new hashtag or update
+            if(!hashTags.isEmpty()){
+                ArrayList<HashTag> allHashTags;
+                allHashTags = HashTagDB.getHashTags();
+                boolean found = false;
+               
+                //if hashtag DB not empty, otherwise insert as new
+                if(!allHashTags.isEmpty()) {
+                    for(int i = 0; i < hashTags.size(); i++) {
+                        for(int j = 0; j < allHashTags.size(); j++) {
+                            //update hashtag count in DB
+                            if(hashTags.get(i).equals(allHashTags.get(j).gethashText())) {
+                                found = true;
+                                int count = allHashTags.get(j).gethashCount();
+                                int id = allHashTags.get(j).getid();
+                                count += 1;
+                                hash.setid(id);
+                                hash.sethashCount(count);
+                                HashTagDB.update(hash);
+                            }     
+                        }
+                        //insert new hashtag
+                        if(!found) {
+                            hash.sethashText(hashTags.get(i));
+                            hash.sethashCount(1);
+                            try {
+                                HashTagDB.insert(hash);
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (Exception ex) {
+                                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        found=false; 
+                    }
+                }else{
+                    for(int i = 0; i < hashTags.size(); i++) {
+                        hash.sethashText(hashTags.get(i));
+                        hash.sethashCount(1);
+                        try {
+                           HashTagDB.insert(hash);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        } 
+                    }
+                }
+                
             }
             session.setAttribute("tweets", tweets);
         }
@@ -246,13 +301,15 @@ public class tweetServlet extends HttpServlet {
         }
         if(action.equals("follow_user"))
         {
-            int userID = user.getid();
-            String followedUserID = request.getParameter("followedUserID");
+            int userID = user.getid();  //get session user ID
+            String followedUserID = request.getParameter("followedUserID"); 
             UserFollow follow = new UserFollow();
             
+            //set Follow object
             follow.setuserID(userID);
             follow.setfollowedUserID(Integer.parseInt(followedUserID));
             
+            //insert Follow object into DB
             try {
                 FollowDB.insert(follow);
             } catch (ClassNotFoundException ex) {
@@ -261,6 +318,7 @@ public class tweetServlet extends HttpServlet {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             
+            //Pull follows for user and set session attribute
             ArrayList<UserFollow> follows;
             follows = FollowDB.selectFollowsByUser(userID);
             session.setAttribute("userFollows", follows);
@@ -271,9 +329,11 @@ public class tweetServlet extends HttpServlet {
             String followedUserID = request.getParameter("followedUserID");
             UserFollow follow = new UserFollow();
             
+            //set Follow object
             follow.setuserID(userID);
             follow.setfollowedUserID(Integer.parseInt(followedUserID));
             
+            //Delete follow from DB
             try {
                 FollowDB.delete(follow);
             } catch (ClassNotFoundException ex) {
@@ -281,6 +341,7 @@ public class tweetServlet extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            //update session with new follow list for user
             ArrayList<UserFollow> follows;
             follows = FollowDB.selectFollowsByUser(userID);
             session.setAttribute("userFollows", follows);
@@ -341,6 +402,25 @@ public class tweetServlet extends HttpServlet {
        }
         
         return userNames;
+    }
+    
+    private ArrayList<String> findHashTags(String text){
+       int i = 0;
+       ArrayList<String> hashTags = new ArrayList<String>();
+       String temp = null;
+       text += " "; //adds a space to the end of text for function below.
+
+       while(true)
+       {
+           int found = text.indexOf("#", i);
+           if (found == -1) break;
+           int start = found;
+           int end = text.indexOf(" ", start);
+           temp = text.substring(start, end);
+           hashTags.add(temp); //add hashtag string
+           i= end +1;
+       }
+       return hashTags;
     }
 
 }
