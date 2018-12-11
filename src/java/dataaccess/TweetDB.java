@@ -28,14 +28,15 @@ public class TweetDB {
         PreparedStatement ps = null;
         
         String preparedSQL = "INSERT INTO "
-                           + "tweets(composerEmail, message, mentions) "
-                           + "VALUES (?,?,?)";
+                           + "tweets(composerEmail, message, mentions, hashtags) "
+                           + "VALUES (?,?,?,?)";
         
         try {
             ps = connection.prepareStatement(preparedSQL);
             ps.setString(1, tweet.getcomposerEmail());
             ps.setString(2, tweet.getMessage());
-            ps.setBoolean(3, tweet.getMentions());            
+            ps.setBoolean(3, tweet.getMentions()); 
+            ps.setBoolean(4, tweet.gethashTags());
             
             ps.executeUpdate();
             return true;
@@ -212,6 +213,47 @@ public class TweetDB {
             DBUtil.closeResultSet(rs);
             pool.freeConnection(connection);
         }
+    }
+    public static UserTweetInfo selectTweetByID(int tweetID) 
+    {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+            
+        String preparedSQL = "SELECT * FROM user_feed_view "
+                           + "WHERE tweetID = ?";
+        
+        try {
+            ps = connection.prepareStatement(preparedSQL);
+            ps.setInt(1, tweetID);
+            
+            rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                UserTweetInfo tweet = new UserTweetInfo();
+                tweet.settweetid(rs.getInt("tweetID"));
+                tweet.setemailAddress(rs.getString("emailAddress"));
+                tweet.setusername(rs.getString("username"));
+                tweet.setfullname(rs.getString("fullname"));
+                tweet.setmessage(rs.getString("message"));
+                tweet.setdate(rs.getString("date"));
+                
+                return tweet;
+            }
+            connection.close();
+            
+            
+        } catch (SQLException e) {
+            for (Throwable t : e)
+                t.printStackTrace();
+            return null;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            DBUtil.closeResultSet(rs);
+            pool.freeConnection(connection);
+        }
+        return null;
     }
     public static ArrayList<UserTweetInfo> getNewTweets(String email){
         ConnectionPool pool = ConnectionPool.getInstance();

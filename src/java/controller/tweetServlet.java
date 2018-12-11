@@ -7,6 +7,7 @@ package controller;
 
 import business.HashTag;
 import business.Tweet;
+import business.TweetHashTag;
 import business.User;
 import business.UserFollow;
 import business.UserTweetInfo;
@@ -14,6 +15,7 @@ import business.UserMention;
 import dataaccess.FollowDB;
 import dataaccess.HashTagDB;
 import dataaccess.TweetDB;
+import dataaccess.TweetHashTagDB;
 import dataaccess.UserDB;
 import dataaccess.UserMentionDB;
 import java.io.IOException;
@@ -138,6 +140,31 @@ public class tweetServlet extends HttpServlet {
             session.setAttribute("userFollows", follows);
             url = "/home.jsp";
         }
+        //get top 10 trends and display
+        else if(action.equals("get_trends"))
+        {
+            ArrayList<HashTag> top10Hash;
+            top10Hash = HashTagDB.top10HashTags();
+            session.setAttribute("trends", top10Hash);
+        }
+        //load a particular hashtag trend data for hashtag.jsp
+        else if(action.equals("load_trend"))
+        {
+            String hashID = request.getParameter("hashID");
+            ArrayList<TweetHashTag> tweetHash;
+            ArrayList<UserTweetInfo> tweets = new ArrayList<>();
+            //select all tweetIDs that include hashtag
+            tweetHash = TweetHashTagDB.selectOnHashTagID(Integer.parseInt(hashID));
+            
+            //for each tweetID, add UserTweetInfo
+            for(int i = 0; i < tweetHash.size(); i++){
+                int tweetID = tweetHash.get(i).gettweetid();
+                UserTweetInfo tweet = TweetDB.selectTweetByID(tweetID);
+                tweets.add(tweet);
+            }
+            session.setAttribute("hashTagTweets", tweets);
+            url = "/hashtag.jsp";
+        }
 
         
         getServletContext()
@@ -184,6 +211,9 @@ public class tweetServlet extends HttpServlet {
             if(!mentions.isEmpty())
                 tweet.setMentions(true);
             
+            if(!hashTags.isEmpty())
+                tweet.sethashTags(true);
+            
             try {
                 TweetDB.insert(tweet);
             } catch (ClassNotFoundException ex) {
@@ -219,12 +249,14 @@ public class tweetServlet extends HttpServlet {
                 ArrayList<HashTag> allHashTags;
                 allHashTags = HashTagDB.getHashTags();
                 boolean found = false;
-               
+                int tweetid = tweets.get(0).gettweetid();
+                TweetHashTag tweethash = new TweetHashTag();
+
                 //if hashtag DB not empty, otherwise insert as new
                 if(!allHashTags.isEmpty()) {
                     for(int i = 0; i < hashTags.size(); i++) {
                         for(int j = 0; j < allHashTags.size(); j++) {
-                            //update hashtag count in DB
+                            //update hashtag count in DB 
                             if(hashTags.get(i).equals(allHashTags.get(j).gethashText())) {
                                 found = true;
                                 int count = allHashTags.get(j).gethashCount();
@@ -233,6 +265,17 @@ public class tweetServlet extends HttpServlet {
                                 hash.setid(id);
                                 hash.sethashCount(count);
                                 HashTagDB.update(hash);
+                                
+                                //associate hashtagID with tweetID
+                                tweethash.settweetid(tweetid);
+                                tweethash.sethashid(id);
+                                try {
+                                    TweetHashTagDB.insert(tweethash);
+                                }catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                                }catch (Exception ex) {
+                                    Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                                }
                             }     
                         }
                         //insert new hashtag
@@ -245,6 +288,18 @@ public class tweetServlet extends HttpServlet {
                                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (Exception ex) {
                                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            //Get HashTagID from DB and associate hashID with TweetID
+                            HashTag addedHashTag = new HashTag();
+                            addedHashTag = HashTagDB.searchByHashText(hashTags.get(i));
+                            tweethash.sethashid(addedHashTag.getid());
+                            tweethash.settweetid(tweetid);
+                            try {
+                                TweetHashTagDB.insert(tweethash);
+                            }catch (ClassNotFoundException ex) {
+                                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                            }catch (Exception ex) {
+                                Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
                             }
                         }
                         found=false; 
@@ -259,11 +314,26 @@ public class tweetServlet extends HttpServlet {
                             Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (Exception ex) {
                             Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
-                        } 
+                        }
+                        HashTag addedHashTag = new HashTag();
+                        //getHashTagID from DB and associate hashID with tweetID in TweetHashTagDB
+                        addedHashTag = HashTagDB.searchByHashText(hashTags.get(i));
+                        tweethash.sethashid(addedHashTag.getid());
+                        tweethash.settweetid(tweetid);
+                        try {
+                            TweetHashTagDB.insert(tweethash);
+                        }catch (ClassNotFoundException ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                        }catch (Exception ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                        }
                     }
                 }
                 
             }
+            ArrayList<HashTag> top10Hash;
+            top10Hash = HashTagDB.top10HashTags();
+            session.setAttribute("trends", top10Hash);
             session.setAttribute("tweets", tweets);
         }
         if(action.equals("delete_tweet")){
@@ -273,14 +343,17 @@ public class tweetServlet extends HttpServlet {
             user = (User) session.getAttribute("user");
             String email = user.getemail();
             boolean mentions = false;
+            boolean hashTags = false;
             tweets = TweetDB.selectTweetsByUser(email);
+            ArrayList<TweetHashTag> tweetHash;
             
-            //check for user mentions
+            //check for user mentions and hashtags
             for(int i = 0; i < tweets.size(); i++) {
                 if(tweets.get(i).gettweetid() == Integer.parseInt(tweetID)) {
-                    if(tweets.get(i).getmentions() != null) {
+                    if(tweets.get(i).getmentions() != null)
                         mentions = true;
-                    }
+                    if(tweets.get(i).gethashtags() != null)
+                        hashTags = true;
                 }
             }
             //if there are user mentions, delete mentions
@@ -293,6 +366,46 @@ public class tweetServlet extends HttpServlet {
                         Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
                     }
             }
+            //if there are hashtags, delete hashtag or decrement current hashtag
+            if(hashTags){
+                HashTag hash = new HashTag();
+                int count = 1;
+                tweetHash = TweetHashTagDB.selectHashTagIDsByTweet(Integer.parseInt(tweetID));
+
+                for(int i = 0; i < tweetHash.size(); i++)
+                {
+                    hash = HashTagDB.searchByHashID(tweetHash.get(i).gethashid());
+                    //if count is 1, then hashtag is deleted from DB
+                    if(hash.gethashCount() == 1)
+                    {
+                        try {
+                            HashTagDB.delete(hash.getid());
+                        }catch (ClassNotFoundException ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                        }catch (Exception ex) {
+                            Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                        }
+                    }else{
+                        //decrement hashCount by 1
+                        int hashCount = hash.gethashCount();
+                        hashCount -= count;
+                        hash.sethashCount(count);
+                        HashTagDB.update(hash);
+                    }
+                }
+                    //delete TweetID/HashtagID association in DB
+                    try {
+                        TweetHashTagDB.delete(Integer.parseInt(tweetID));
+                    }catch (ClassNotFoundException ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }catch (Exception ex) {
+                        Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE,null,ex);
+                    }
+                    //update top 10 hashtags 
+                    ArrayList<HashTag> top10Hash;
+                    top10Hash = HashTagDB.top10HashTags();
+                    session.setAttribute("trends", top10Hash);
+            }
             try {
                 TweetDB.delete(tweetID);
             } catch (ClassNotFoundException ex) {
@@ -300,10 +413,11 @@ public class tweetServlet extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(tweetServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+           
             tweets.clear(); //clear tweets array to update
             tweets = TweetDB.selectTweetsByUser(email);
             session.setAttribute("tweets", tweets);
+            
         }
         if(action.equals("follow_user"))
         {

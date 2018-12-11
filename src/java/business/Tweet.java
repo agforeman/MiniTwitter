@@ -17,12 +17,14 @@ public class Tweet implements Serializable {
     private String composerEmail;
     private String message;
     private boolean mentions;
+    private boolean hashTags;
     private String date; 
     
     public Tweet() {
         composerEmail = "";
         message = "";
         mentions = false;
+        hashTags = false;
         date = "";
     }
     
@@ -44,6 +46,13 @@ public class Tweet implements Serializable {
     }
     public void setMentions(boolean mentions) {
         this.mentions = mentions;
+    }
+    public boolean gethashTags() {
+        return this.hashTags;
+    }
+    public void sethashTags(boolean hashTags) 
+    {
+        this.hashTags = hashTags;
     }
     public void setdate(String date) {
         this.date = date;

@@ -290,8 +290,7 @@ public class membershipServlet extends HttpServlet {
             if(photo != null){
                 inputPhoto = photo.getInputStream();
             }
-            
-            
+
             //get user session and set user object from session
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("user");

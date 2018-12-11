@@ -20,6 +20,7 @@ public class UserTweetInfo implements Serializable {
     private String fullname;
     private String message;
     private String mentions;
+    private String hashtags;
     private String date;
     
     public UserTweetInfo() {
@@ -29,6 +30,7 @@ public class UserTweetInfo implements Serializable {
         fullname = "";
         message = "";
         mentions = "";
+        hashtags = "";
         date = "";
     }
     
@@ -73,6 +75,12 @@ public class UserTweetInfo implements Serializable {
     }
     public void setmentions(String mentions) {
         this.mentions = mentions;
+    }
+    public String gethashtags() {
+        return this.hashtags;
+    }
+    public void sethashtags(String hash) {
+        this.hashtags = hash;
     }
     public String getdate() {
         return this.date;

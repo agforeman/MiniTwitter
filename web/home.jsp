@@ -31,9 +31,12 @@
         <c:if test="${userFollows == null}">
             <c:redirect url = "/tweet?action=get_allfollows"/>
         </c:if>
+        <c:if test="${trends == null}">
+            <c:redirect url = "/tweet?action=get_trends"/>
+        </c:if>
         <div class="flex-container">
             <div id="left_bar" class="side_column">
-                <div id="user_info">
+                <div class="user_info">
                     <div id="profile_pic">
                         <img src="${pageContext.request.contextPath}/tweet?action=get_image&email=${user.email}" 
                              alt="Profile Pic"/>
@@ -44,9 +47,13 @@
                     <p><b><c:out value='${numberOfFollowers}'/></b> Follower(s)!</p>
                     <p>Following: <b><c:out value='${numberOfFollowing}'/></b> User(s)!</p>
                 </div>
-                <div id="trends">
                     <h2>TRENDS</h2>
-                </div>
+                    <div class="trends">
+                        <c:forEach items="${trends}" var="trend">
+                            <a href="/MiniTwitter/tweet?action=load_trend&hashID=${trend.id}">
+                                <c:out value="${trend.hashText}"/></a><br/><br/>
+                        </c:forEach>
+                    </div>
             </div>
             <div id="middle_bar" class="main_column">
                 <div id="tweet_composer">
@@ -56,7 +63,7 @@
                     <form action="tweet" method="post" id="tweet_form">
                         <input type="hidden" name="action" value="post_tweet"/>
                         <input type="submit" value="Post Tweet" 
-                               class="button tweet_button"/><br />
+                               class="button tweet_button"/><br/><br/>
                     </form>                    
                 </div>
                 <div id="user_feed">
@@ -92,7 +99,6 @@
                 </div>
             </div>
             <div id="right_bar" class="side_column">
-                
                     <h2>Who to follow?</h2>
                     <c:set var="done" value='${false}'/>
                     <c:forEach items="${users}" var="suggested_user">   
@@ -104,7 +110,7 @@
                                 </div>
                                 <span><c:out value='${suggested_user.fullname}'/></span>
                                 <br/>
-                                <span><c:out value='@${suggested_user.username}'/></span>                                         
+                                <span><c:out value='@${suggested_user.username}'/></span><br/><br/>                                        
                                 
                                 <!-- Follow/Unfollow button form -->
                                 <form action="tweet" method="post"/>
@@ -113,7 +119,7 @@
                                     <!-- Display the follow buttons if there are no followed users -->
                                     <input type="hidden" name="action" value="follow_user"/>
                                     <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
-                                    <input type="submit" value="Follow" class="button delete_button"> 
+                                    <input type="submit" value="Follow" class="button follow_button"> 
                                 </c:when>
                                 <c:otherwise>
                                 <!-- Display the un-follow or the follow button if there are followed users-->
@@ -125,7 +131,7 @@
                                              if you haven't already assigned a button -->
                                         <input type="hidden" name="action" value="unfollow_user"/>
                                         <input type="hidden" name="followedUserID" value="${user_follows.followedUserID}"/>
-                                        <input type="submit" value="Unfollow" class="button delete_button">
+                                        <input type="submit" value="Unfollow" class="button follow_button">
                                     </c:if>                           
                                 </c:forEach>
                                 <!-- If the followed user is not the suggested user put follow -->
@@ -134,7 +140,7 @@
                                          done so already -->
                                     <input type="hidden" name="action" value="follow_user"/>
                                     <input type="hidden" name="followedUserID" value="${suggested_user.id}"/>
-                                    <input type="submit" value="Follow" class="button delete_button">
+                                    <input type="submit" value="Follow" class="button follow_button">
                                 </c:if>    
                                 <c:set var="done" value='${false}'/>
                                 </c:otherwise>
